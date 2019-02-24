@@ -11,6 +11,9 @@ int main(void)
     sc_memoryShow();
     sc_memorySave ("Comp.dat");
     sc_memoryInit();
+    sc_memoryShow();
     sc_memoryLoad ("Comp.dat");
     sc_memoryShow();
+    sc_regInit();
+
 }
