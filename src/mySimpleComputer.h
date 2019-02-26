@@ -15,8 +15,9 @@
 #define OUT_OF_ADDRESS -1
 #define OUT_OF_FILE -2
 #define WRONG_REGISTR -3
-#define OUT_OF_COMMAND -4
-#define WRONG_COMMAND -5
+#define WRONG_VALUE -4
+#define OUT_OF_COMMAND -5
+#define WRONG_COMMAND -6
 
 int RAM[N];
 int reg_flags;
@@ -34,5 +35,3 @@ int sc_commandEncode(int command, int operand, int * value);
 int sc_commandDecode(int value, int * command, int * operand);
 
 #endif
-
-

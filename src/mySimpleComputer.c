@@ -2,7 +2,7 @@
 #include "mySimpleComputer.h"
 
 #define commands 12
-int mas_commands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 0x40, 0x41, 0x42, 0x43};
+int mas_commands[] = {10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43};
 
 int sc_memoryInit()
 {
@@ -32,7 +32,7 @@ int sc_memorySet (int address, int value)
     }
     else
     {
-        printf("Out of Memory\n");
+        printf("OUT_OF_ADDRES\n");
         return OUT_OF_ADDRESS;
     }
 }
@@ -46,7 +46,7 @@ int sc_memoryGet (int address, int * value)
     }
     else
     {
-        printf("Out of Address\n");
+        printf("OUT_OF_ADDRES\n");
         return OUT_OF_ADDRESS;
     }
 }
@@ -56,7 +56,7 @@ int sc_memorySave (char * filename)
     FILE* f = fopen(filename, "wb+");
     if(f == NULL)
     {
-        printf("Cannot open file\n");   
+        printf("OUT_OF_FILE\n");   
         return OUT_OF_FILE;   
     }
     fwrite(RAM, sizeof(int), N, f);
@@ -69,7 +69,7 @@ int sc_memoryLoad (char * filename)
     FILE* f = fopen(filename, "rb+");
     if(f == NULL)
     {
-        printf("Cannot open file\n");  
+        printf("OUT_OF_FILE\n");  
         return OUT_OF_FILE;    
     }
     fread(RAM, sizeof(int), N, f);
@@ -85,43 +85,48 @@ int sc_regInit(void)
 
 int sc_regSet (int registr, int value)
 {
-    if ( (registr >= 1) || (registr <= 8))
+    if ( (registr >= 1) && (registr <= 8))
     {
-         if (value == 1)
-         {
-            reg_flags = reg_flags | (1 << (registr - 1));
-         }
-         else if (value == 0)
-         {
-             reg_flags = reg_flags & (~(1 << (registr - 1)));
-         }
-		 return 0;
+        if (value == 1)
+        {
+           reg_flags = reg_flags | (1 << (registr - 1));
+           return 0;
+        }
+        else if (value == 0)
+        {
+           reg_flags = reg_flags & (~(1 << (registr - 1)));
+           return 0;
+        }
+        else
+        {
+            printf("WRONG_VALUE\n");
+            return WRONG_VALUE;
+        }
     }
     else
-	{
-        printf("Mistake\n");
+    {
+        printf("WRONG_REGISTR\n");
         return WRONG_REGISTR;
     }
 }
 
 int sc_regGet (int registr, int * value)
 {
-    if ( (registr >= 1) || (registr <=8))
+    if ( (registr >= 1) && (registr <= 8))
     { 
-        registr = (reg_flags >> (registr - 1)) & 0x1;
-        *value = registr;
+        *value = (reg_flags >> (registr - 1)) & 0x1;
         return 0;
     }
     else
     {
-        printf("Mistake2\n");
+        printf("WRONG_REGISTR\n");
         return WRONG_REGISTR;
     }
 }
 
 int sc_commandEncode(int command, int operand, int * value)
 {
-    int buf;
+    int buf = 0; 
 
     for(int i = 0; i < commands; i++)
     {
@@ -131,20 +136,21 @@ int sc_commandEncode(int command, int operand, int * value)
         }
     }
 
-    if(buf == 1)
+    if((buf == 1) && ((operand >= 0) && (operand < N)))
     {
         *value = (command << 7) | operand;
         return 0;
     }
     else
     {
+        printf("OUT_OF_COMMAND\n");
         return OUT_OF_COMMAND;
     }
 }
 
 int sc_commandDecode(int value, int * command, int * operand)
 {
-    int buf;
+    int buf = 0;
     int attribute;
     int buf_command;
     int buf_operand;
@@ -163,20 +169,21 @@ int sc_commandDecode(int value, int * command, int * operand)
             }
         }
 
-        if(buf == 1)
+        if((buf == 1) && ((*operand >= 0) && (*operand < N))) 
         {
             *command = buf_command;
             *operand = buf_operand;
         }
         else if(buf == 0)
         {
+            printf("OUT_OF_COMMAND\n");
             return OUT_OF_COMMAND;
         }
         return 0;
     }
     else
     {
+        printf("WRONG_COMMAND\n");
         return WRONG_COMMAND;
     } 
 }
-
