@@ -3,21 +3,13 @@
 
 #define N 100
 
-#define REGISTR1  1
-#define REGISTR2  2
-#define REGISTR3  3
-#define REGISTR4  4
-#define REGISTR5  5
-#define REGISTR6  6
-#define REGISTR7  7
-#define REGISTR8  8
+#define commands 12
 
-#define OUT_OF_ADDRESS -1
-#define OUT_OF_FILE -2
-#define WRONG_REGISTR -3
-#define WRONG_VALUE -4
-#define OUT_OF_COMMAND -5
-#define WRONG_COMMAND -6
+#define OVERFLOW 1
+#define NULL_DEL 2
+#define OUT_OF_MEMORY 3
+#define IMPULS 4
+#define WRONG_COMMAND 5
 
 int RAM[N];
 int reg_flags;

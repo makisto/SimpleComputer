@@ -4,7 +4,7 @@
 int main(void) 
 {
     int a, b, c, d, e, f, g, h, i, j, k, l, m;
-    int z = 50;
+    int z = 0x50;
 
     sc_memoryInit();
     sc_memorySet (76, 8);
@@ -18,7 +18,7 @@ int main(void)
     sc_memoryGet(26, &c);
     sc_memoryGet(990, &d);
     sc_memoryGet(99, &e);
-    printf("Значения ячеек:\n%d\n%d\n%d\n%d\n%d\n", a, b, c, d, e);
+    printf("Значения ячеек:\n%d\n%d\n%d\n%d\n", a, b, c, d);
 
     sc_memorySave ("Comp.dat");
     sc_memoryInit();
@@ -27,20 +27,20 @@ int main(void)
     sc_memoryShow();
 
     sc_regInit();
-    sc_regSet(REGISTR1, 1);
-    sc_regSet(REGISTR5, 0);
-    sc_regSet(REGISTR4, 6);
+    sc_regSet(OVERFLOW, 1);
+    sc_regSet(OUT_OF_MEMORY, 0);
+    sc_regSet(WRONG_COMMAND, 6);
     sc_regSet(9, 0);
-    sc_regGet(REGISTR1, &f);
-    sc_regGet(REGISTR5, &g);
-    sc_regGet(REGISTR4, &h);
+    sc_regGet(OVERFLOW, &f);
+    sc_regGet(OUT_OF_MEMORY, &g);
+    sc_regGet(WRONG_COMMAND, &h);
     sc_regGet(9, &m);
     printf("Значения флагов:\n%d\n%d\n%d\n%d\n", f, g, h, m);
     
-    sc_commandEncode(70, z, &i);
-    sc_commandEncode(11, z, &j);
-    sc_commandEncode(67, z, &k);
-    sc_commandEncode(43, z, &l);
+    sc_commandEncode(0x70, z, &i);
+    sc_commandEncode(0x11, z, &j);
+    sc_commandEncode(0x67, z, &k);
+    sc_commandEncode(0x43, z, &l);
     printf("Закодированная команда: \n%d\n%d\n%d\n%d\n", i, j, k, l);
     sc_commandDecode(i, &i, &z);
     sc_commandDecode(j, &j, &z);

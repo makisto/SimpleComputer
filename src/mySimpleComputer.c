@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include "mySimpleComputer.h"
 
-#define commands 12
-int mas_commands[] = {10, 11, 20, 21, 30, 31, 32, 33, 40, 41, 42, 43};
+int mas_commands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 0x40, 0x41, 0x42, 0x43};
 
 int sc_memoryInit()
 {
@@ -33,7 +32,7 @@ int sc_memorySet (int address, int value)
     else
     {
         printf("OUT_OF_ADDRES\n");
-        return OUT_OF_ADDRESS;
+        return -1;
     }
 }
 
@@ -47,7 +46,7 @@ int sc_memoryGet (int address, int * value)
     else
     {
         printf("OUT_OF_ADDRES\n");
-        return OUT_OF_ADDRESS;
+        return -1;
     }
 }
 
@@ -57,7 +56,7 @@ int sc_memorySave (char * filename)
     if(f == NULL)
     {
         printf("OUT_OF_FILE\n");   
-        return OUT_OF_FILE;   
+        return -1;
     }
     fwrite(RAM, sizeof(int), N, f);
     fclose(f);
@@ -70,7 +69,7 @@ int sc_memoryLoad (char * filename)
     if(f == NULL)
     {
         printf("OUT_OF_FILE\n");  
-        return OUT_OF_FILE;    
+        return -1;    
     }
     fread(RAM, sizeof(int), N, f);
     fclose(f);
@@ -100,13 +99,13 @@ int sc_regSet (int registr, int value)
         else
         {
             printf("WRONG_VALUE\n");
-            return WRONG_VALUE;
+            return -1;
         }
     }
     else
     {
         printf("WRONG_REGISTR\n");
-        return WRONG_REGISTR;
+        return -1;
     }
 }
 
@@ -120,7 +119,7 @@ int sc_regGet (int registr, int * value)
     else
     {
         printf("WRONG_REGISTR\n");
-        return WRONG_REGISTR;
+        return -1;
     }
 }
 
@@ -144,7 +143,7 @@ int sc_commandEncode(int command, int operand, int * value)
     else
     {
         printf("OUT_OF_COMMAND\n");
-        return OUT_OF_COMMAND;
+        return -1;
     }
 }
 
@@ -177,13 +176,13 @@ int sc_commandDecode(int value, int * command, int * operand)
         else if(buf == 0)
         {
             printf("OUT_OF_COMMAND\n");
-            return OUT_OF_COMMAND;
+            return -1;
         }
         return 0;
     }
     else
     {
         printf("WRONG_COMMAND\n");
-        return WRONG_COMMAND;
+        return -1;
     } 
 }
