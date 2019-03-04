@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "mySimpleComputer.h"
+#include "myTerm.h"
 
 int main(void) 
 {
@@ -48,4 +49,7 @@ int main(void)
     sc_commandDecode(l, &l, &z);
     printf("Декодированная команда: \n%d\n%d\n%d\n%d\n", i, j, k, l);
     
+    mt_setfgcolor(BLACK); 
+    mt_setfgcolor(GREEN);
+    mt_setfgcolor(YELLOW);
 }
