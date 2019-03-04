@@ -1,4 +1,4 @@
-GCC = gcc -Wall -Werror
+GCC = gcc -Wall -Werror -std=c99
 OBJ = build/mySimpleComputer.o build/myTerm.o
 HEAD = src/mySimpleComputer.h src/myTerm.h
 
