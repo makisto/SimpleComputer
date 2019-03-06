@@ -3,14 +3,15 @@
 
 enum colors
 {
-    BLACK, //0
-    RED,  //1
-    GREEN,//2
-    YELLOW,//3
-    BLUE,//4
-    PURPLE,//5
-    LIGHT_BLUE,//6
-    WHITE //7
+    BLACK, 
+    RED,  
+    GREEN,
+    YELLOW,
+    BLUE,
+    PURPLE,
+    LIGHT_BLUE,
+    WHITE, 
+    DEFAULT = 9
 };
 
 int mt_clrscr(void);

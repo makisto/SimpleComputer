@@ -1,6 +1,7 @@
 #define CTEST_MAIN
 
 #include "mySimpleComputer.h"
+#include "myTerm.h"
 #include <ctest.h>
 
 int operand = 0x50;
@@ -95,6 +96,41 @@ CTEST(comm, Wrong)
     int result = sc_commandDecode(0x66, &command, &operand);
     int expected = -1;
     ASSERT_EQUAL(expected, result);
+}
+
+CTEST(GOTO, Incorrect)
+{
+    int result = mt_gotoXY(110, 110);
+    int expected = -1;
+    ASSERT_EQUAL(expected, result);   
+}
+
+CTEST(SetFrontColor, Correct)
+{
+    int result = mt_setfgcolor(DEFAULT);
+    int expected = 0;
+    ASSERT_EQUAL(expected, result);   
+}
+
+CTEST(SetFrontColor, Incorrect)
+{
+    int result = mt_setfgcolor(8);
+    int expected = -1;
+    ASSERT_EQUAL(expected, result);   
+}
+
+CTEST(SetBackColor, Correct)
+{
+    int result = mt_setfgcolor(DEFAULT);
+    int expected = 0;
+    ASSERT_EQUAL(expected, result);   
+}
+
+CTEST(SetBackColor, Incorrect)
+{
+    int result = mt_setbgcolor(8);
+    int expected = -1;
+    ASSERT_EQUAL(expected, result);   
 }
 
 int main(int argc, const char** argv) 

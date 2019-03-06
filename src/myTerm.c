@@ -1,22 +1,28 @@
 #include <stdio.h>
-#include <termios.h>
 #include <sys/ioctl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include "myTerm.h"
 
 int mt_clrscr(void)
 {
-    printf("\033[H");  
+    printf("\E[H\E[2J");  
     return 0;
 }
 
 int mt_gotoXY(int row, int col)
 {
-    printf("\033[%d;%dH", row, col); 
-    return 0;
+    int x, y;
+
+    mt_getscreensize(&x, &y);
+    if((row >= 0) && (col >= 0) && (row <= x) && (col <= y))
+    {
+        printf("\E[%d;%dH", row, col); 
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 
 int mt_getscreensize(int * rows, int * cols)
@@ -37,14 +43,28 @@ int mt_getscreensize(int * rows, int * cols)
 
 int mt_setfgcolor(enum colors color)
 {
-    printf("\033[3%dm", color); 
-    return 0;
+    if((color >= 0 && color <= 7) || (color == 9))
+    {
+        printf("\E[3%dm", color); 
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }    
 }
 
 int mt_setbgcolor(enum colors color)
 {
-    printf("\033[4%dm", color);
-    return 0;
+    if((color >=0 && color <= 7) || (color == 9))
+    {
+        printf("\E[4%dm", color); 
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }  
 }
 
 
