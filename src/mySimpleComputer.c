@@ -12,16 +12,6 @@ int sc_memoryInit()
     return 0;
 }
 
-int sc_memoryShow()
-{
-    for(int i = 0; i < N; i++)
-    {
-        printf("%d ", RAM[i]);
-    }
-    printf("\n");
-    return 0;
-}
-
 int sc_memorySet (int address, int value)
 {
     if((address >= 0) && (address < N))
@@ -45,7 +35,6 @@ int sc_memoryGet (int address, int * value)
     }
     else
     {
-        printf("OUT_OF_ADDRES\n");
         return -1;
     }
 }
@@ -54,8 +43,7 @@ int sc_memorySave (char * filename)
 {
     FILE* f = fopen(filename, "wb+");
     if(f == NULL)
-    {
-        printf("OUT_OF_FILE\n");   
+    {  
         return -1;
     }
     fwrite(RAM, sizeof(int), N, f);
@@ -68,7 +56,6 @@ int sc_memoryLoad (char * filename)
     FILE* f = fopen(filename, "rb+");
     if(f == NULL)
     {
-        printf("OUT_OF_FILE\n");  
         return -1;    
     }
     fread(RAM, sizeof(int), N, f);
@@ -98,13 +85,11 @@ int sc_regSet (int registr, int value)
         }
         else
         {
-            printf("WRONG_VALUE\n");
             return -1;
         }
     }
     else
     {
-        printf("WRONG_REGISTR\n");
         return -1;
     }
 }
@@ -118,7 +103,6 @@ int sc_regGet (int registr, int * value)
     }
     else
     {
-        printf("WRONG_REGISTR\n");
         return -1;
     }
 }
@@ -142,7 +126,6 @@ int sc_commandEncode(int command, int operand, int * value)
     }
     else
     {
-        printf("OUT_OF_COMMAND\n");
         return -1;
     }
 }
@@ -175,14 +158,12 @@ int sc_commandDecode(int value, int * command, int * operand)
         }
         else if(buf == 0)
         {
-            printf("OUT_OF_COMMAND\n");
             return -1;
         }
         return 0;
     }
     else
     {
-        printf("WRONG_COMMAND\n");
         return -1;
     } 
 }
