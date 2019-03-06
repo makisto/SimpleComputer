@@ -4,7 +4,7 @@
 
 int main(void) 
 {
-    int a, b, c, d, e, f, g, h, i, j, k, l, m;
+    /*int a, b, c, d, e, f, g, h, i, j, k, l, m;
     int z = 0x50;
 
     sc_memoryInit();
@@ -47,9 +47,20 @@ int main(void)
     sc_commandDecode(j, &j, &z);
     sc_commandDecode(k, &k, &z);
     sc_commandDecode(l, &l, &z);
-    printf("Декодированная команда: \n%d\n%d\n%d\n%d\n", i, j, k, l);
+    printf("Декодированная команда: \n%d\n%d\n%d\n%d\n", i, j, k, l);*/
     
-    mt_setfgcolor(BLACK); 
+    /*mt_setfgcolor(BLACK); 
     mt_setfgcolor(GREEN);
-    mt_setfgcolor(YELLOW);
+    mt_setfgcolor(YELLOW);*/
+    
+    int row, col;
+    mt_clrscr();
+ 
+    mt_gotoXY(11, 60);
+    mt_getscreensize(&row, &col);
+    mt_setfgcolor(GREEN); 
+    mt_setbgcolor(RED); 
+    printf("Rows - %dCols - %d\n", row, col);
+    mt_gotoXY(15, 50);
+    printf("Rows - %dCols - %d\n", row, col);
 }
