@@ -14,7 +14,7 @@ void memoryShow()
         {
             mt_gotoXY((i / 10) + 1, 0);
         }
-        printf("%d ", RAM[i]);
+        printf("+%04X ", RAM[i]);
     }
 }
 
@@ -22,17 +22,17 @@ void CPUshow()
 {
     mt_setfgcolor(BLACK); 
     mt_setbgcolor(WHITE); 
-    mt_gotoXY(1, 50);
+    mt_gotoXY(1, 61);
     printf("accumulator");
-    mt_gotoXY(2, 50);
+    mt_gotoXY(2, 61);
     printf("%d", accumulator);
-    mt_gotoXY(3, 50);
+    mt_gotoXY(3, 61);
     printf("instructionCounter");
-    mt_gotoXY(4, 50);
+    mt_gotoXY(4, 61);
     printf("%d", inst_counter);
-    mt_gotoXY(5, 50);
+    mt_gotoXY(5, 61);
     printf("Operation");
-    mt_gotoXY(6, 50);
+    mt_gotoXY(6, 61);
     printf("%d", oper_res);
 }
 
@@ -41,9 +41,9 @@ void flagShow()
     int fl;
     mt_setfgcolor(YELLOW); 
     mt_setbgcolor(PURPLE); 
-    mt_gotoXY(7, 50);
+    mt_gotoXY(7, 61);
     printf("Flags");
-    mt_gotoXY(8, 50);
+    mt_gotoXY(8, 61);
     if(sc_regGet(OVERFLOW, &fl) == 0)
     printf("O ");
     else printf(" ");
@@ -65,21 +65,21 @@ void keysShow()
 {
     mt_setfgcolor(LIGHT_BLUE); 
     mt_setbgcolor(BLACK); 
-    mt_gotoXY(9, 50);
+    mt_gotoXY(9, 61);
     printf("Keys:");
-    mt_gotoXY(10, 50);
+    mt_gotoXY(10, 61);
     printf("l - load");
-    mt_gotoXY(11, 50);
+    mt_gotoXY(11, 61);
     printf("s - save");
-    mt_gotoXY(12, 50);
+    mt_gotoXY(12, 61);
     printf("r - run");
-    mt_gotoXY(13, 50);
+    mt_gotoXY(13, 61);
     printf("s - step");
-    mt_gotoXY(14, 50);
+    mt_gotoXY(14, 61);
     printf("i - reset");
-    mt_gotoXY(15, 50);
+    mt_gotoXY(15, 61);
     printf("f5 - accumulator");
-    mt_gotoXY(16, 50);
+    mt_gotoXY(16, 61);
     printf("f6 - instructionCounter");
     mt_gotoXY(17, 0);
 }      
