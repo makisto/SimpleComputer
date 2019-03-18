@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "mySimpleComputer.h"
 #include "myTerm.h"
+#include "myBigChars.h"
 #include "printComp.h"
 
 int main(void) 
