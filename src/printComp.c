@@ -2,17 +2,16 @@
 #include "mySimpleComputer.h"
 #include "myTerm.h"
 #include "printComp.h"
+#include "myBigChars.h"
 
 void memoryShow()
 {
     mt_clrscr();
-    mt_setfgcolor(GREEN); 
-    mt_setbgcolor(RED); 
     for(int i = 0; i < N; i++)
     {
-        if((i % 10 == 0) && (i >= 10))
+        if(i % 10 == 0)
         {
-            mt_gotoXY((i / 10) + 1, 0);
+            mt_gotoXY((i / 10) + 3, 2);
         }
         printf("+%04X ", RAM[i]);
     }
@@ -20,30 +19,28 @@ void memoryShow()
 
 void CPUshow()
 {
-    mt_setfgcolor(BLACK); 
-    mt_setbgcolor(WHITE); 
-    mt_gotoXY(1, 61);
+    mt_gotoXY(2, 28);
+    printf("Memory");
+    mt_gotoXY(2, 70);
     printf("accumulator");
-    mt_gotoXY(2, 61);
-    printf("%d", accumulator);
-    mt_gotoXY(3, 61);
+    mt_gotoXY(3, 70);
+    printf("+%04X", accumulator);
+    mt_gotoXY(5, 68);
     printf("instructionCounter");
-    mt_gotoXY(4, 61);
-    printf("%d", inst_counter);
-    mt_gotoXY(5, 61);
+    mt_gotoXY(6, 70);
+    printf("+%04X", inst_counter);
+    mt_gotoXY(8, 72);
     printf("Operation");
-    mt_gotoXY(6, 61);
-    printf("%d", oper_res);
+    mt_gotoXY(9, 70);
+    printf("+%04X", oper_res);
 }
 
 void flagShow()
 {
     int fl;
-    mt_setfgcolor(YELLOW); 
-    mt_setbgcolor(PURPLE); 
-    mt_gotoXY(7, 61);
+    mt_gotoXY(11, 75);
     printf("Flags");
-    mt_gotoXY(8, 61);
+    mt_gotoXY(12, 71);
     if(sc_regGet(OVERFLOW, &fl) == 0)
     printf("O ");
     else printf(" ");
@@ -63,23 +60,32 @@ void flagShow()
 
 void keysShow()
 {
-    mt_setfgcolor(LIGHT_BLUE); 
-    mt_setbgcolor(BLACK); 
-    mt_gotoXY(9, 61);
+    mt_gotoXY(14, 56);
     printf("Keys:");
-    mt_gotoXY(10, 61);
+    mt_gotoXY(15, 56);
     printf("l - load");
-    mt_gotoXY(11, 61);
+    mt_gotoXY(16, 56);
     printf("s - save");
-    mt_gotoXY(12, 61);
+    mt_gotoXY(17, 56);
     printf("r - run");
-    mt_gotoXY(13, 61);
+    mt_gotoXY(18, 56);
     printf("s - step");
-    mt_gotoXY(14, 61);
+    mt_gotoXY(19, 56);
     printf("i - reset");
-    mt_gotoXY(15, 61);
+    mt_gotoXY(20, 56);
     printf("f5 - accumulator");
-    mt_gotoXY(16, 61);
+    mt_gotoXY(21, 56);
     printf("f6 - instructionCounter");
-    mt_gotoXY(17, 0);
-}      
+    mt_gotoXY(24, 0);
+} 
+
+void printBoxes()
+{
+    bc_box(2, 1, 11, 60);  
+    bc_box(2, 63, 2, 25);  
+    bc_box(5, 63, 2, 25);
+    bc_box(8, 63, 2, 25);
+    bc_box(11, 63, 2, 25);
+    bc_box(14, 55, 9, 33);
+    bc_box(14, 1, 9, 52);
+}    

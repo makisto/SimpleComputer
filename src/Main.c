@@ -9,12 +9,10 @@ int main(void)
 {    
     system("tput reset");
     memoryShow();
+    printBoxes();
     CPUshow();
     flagShow();
     keysShow();
-    mt_setfgcolor(DEFAULT); 
-    mt_setbgcolor(DEFAULT);
-    int row, col;
-    mt_getscreensize(&row, &col);
-    printf("Rows - %d\nCols - %d\n", row, col);
+    int mas[] = {1, 1};
+    bc_printbigchar(mas, 15, 2, GREEN, GREEN);
 }
