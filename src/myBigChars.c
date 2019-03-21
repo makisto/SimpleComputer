@@ -48,7 +48,7 @@ int bc_printbigchar (int* big, int x, int y, enum colors fg_color, enum colors b
         for(int j = 0; j < 8; j++)
         {
             mas_position = i >> 2;
-            bit = (big[mas_position] >> ((i % 4) * 8 + j));
+            bit = (big[mas_position] >> ((i % 4) * 8 + j)) & 0x1;
             if(bit == 0)
             {
                 bc_printA(" ");
@@ -106,7 +106,7 @@ int bc_getbigcharpos (int * big, int x, int y, int * value)
     
     x = x % 4;
 
-    *value = (big[mas_position] >> (x * 8 + y));
+    *value = (big[mas_position] >> (x * 8 + y)) & 0x1;
     return 0;
 }
 
