@@ -71,7 +71,7 @@ int sc_regInit(void)
 
 int sc_regSet (int registr, int value)
 {
-    if ( (registr >= 1) && (registr <= 8))
+    if ( (registr >= 1) && (registr <= 5))
     {
         if (value == 1)
         {
@@ -96,7 +96,7 @@ int sc_regSet (int registr, int value)
 
 int sc_regGet (int registr, int * value)
 {
-    if ( (registr >= 1) && (registr <= 8))
+    if ( (registr >= 1) && (registr <= 5))
     { 
         *value = (reg_flags >> (registr - 1)) & 0x1;
         return 0;
