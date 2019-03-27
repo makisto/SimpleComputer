@@ -1,5 +1,5 @@
-#ifndef MYSIMPCOMP
-#define MYSIMPCOMP
+#ifndef _MY_SIMPLE_COMPUTER_
+#define _MY_SIMPLE_COMPUTER_
 
 #define N 100
 
@@ -13,9 +13,6 @@
 
 int RAM[N];
 int reg_flags;
-int accumulator;
-int inst_counter;
-int oper_res;
 
 int sc_memoryInit();
 int sc_memorySet (int address, int value);

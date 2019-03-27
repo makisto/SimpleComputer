@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <unistd.h>
-
 #include "myBigChars.h"
+#include "printComp.h"
 
 int bc_printA (char * str)
 {

@@ -1,5 +1,8 @@
-#ifndef MY_TERMINAL
-#define MY_TERMINAL
+#ifndef _MY_TERM_
+#define _MY_TERM_
+
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 enum colors
 {

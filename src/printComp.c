@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "mySimpleComputer.h"
 #include "myTerm.h"
 #include "printComp.h"
@@ -32,7 +31,7 @@ void CPUshow()
     mt_gotoXY(8, 72);
     printf("Operation");
     mt_gotoXY(9, 70);
-    printf("+%04X", oper_res);
+    printf("+00 : 00");
 }
 
 void flagShow()
@@ -51,7 +50,7 @@ void flagShow()
         printf(" ");
     }
     sc_regGet(OUT_OF_MEMORY, &fl);
-    if(fl == 0)
+    if(fl == 1)
     {
         printf("M ");
     }
@@ -124,7 +123,7 @@ void printBigChars()
 {
     int value;
     int bigchar[2];
-    char char_symbol[8];
+    char char_symbol[6];
 
     sc_memoryGet(inst_counter, &value);
     if(value >> 14)

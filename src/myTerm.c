@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include "myTerm.h"
+#include "printComp.h"
 
 int mt_clrscr(void)
 {
