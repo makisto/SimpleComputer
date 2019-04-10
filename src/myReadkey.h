@@ -1,10 +1,26 @@
 #ifndef _MY_READKEY_
 #define _MY_READKEY_
 
+#include <unistd.h>
+#include <termios.h>
+
 enum keys
 {
-    key1,
-    key2
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    LOAD,
+    SAVE,
+    RUN,
+    STEP,
+    RESET,
+    F5,
+    F6,
+    QUIT,
+    CANON,
+    UNCANON,
+    NONE
 };
 
 int rk_readkey (enum keys * key);
