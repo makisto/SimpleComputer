@@ -1,12 +1,27 @@
 #include "myReadkey.h"
 #include "printComp.h"
+#include "myTerm.h"
+
+static struct termios terminal1;
 
 int rk_readkey (enum keys * key)
 {
-	char buf;
-	
-	read(1, &buf, 1);
-	switch(buf)
+	char buf[16];
+    //char buf2[16];
+
+	if(tcgetattr(1, &terminal1) != 0)
+    {
+        return -1;
+    }
+	if(rk_mytermregime(0, 1, 1, 0, 1) != 0)
+    {
+        return -1;
+    }
+
+    mt_gotoXY(27, 1);
+    read(0, buf, 15);
+
+	/*switch(buf)
 	{
 		case 'q':
 			*key = QUIT;
@@ -29,7 +44,6 @@ int rk_readkey (enum keys * key)
 		case 'x':
 			*key = UNCANON;
 			break;
-		case '\E':
 			read(1, &buf, 1);
 			read(1, &buf, 1);
 			switch(buf)
@@ -64,11 +78,60 @@ int rk_readkey (enum keys * key)
 					*key = NONE;
 					break;
 		    }
-		default:
+		  default:
             *key = NONE;
 			break;			
-	}
-		
+	}*/
+
+	if(buf[0] == 'q')
+    {
+        *key = QUIT;  
+    }
+	if(buf[0] == 'l')
+    {
+        *key = LOAD;  
+    }
+	if(buf[0] == 's')
+    {
+        *key = SAVE;  
+    }
+    if(buf[0] == 'r')
+    {
+        *key = RUN;  
+    }
+    if(buf[0] == 'i')
+    {
+        *key = RESET;  
+    }
+	if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == '1') && (buf[3] == '5'))
+    {
+        *key = F5;  
+    }
+	if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == '1') && (buf[3] == '7'))
+    {
+        *key = F6;  
+    }
+    if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == 'A'))
+    {
+        *key = UP;  
+    }
+    if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == 'B'))
+    {
+        *key = DOWN;  
+    }
+    if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == 'C'))
+    {
+        *key = RIGHT;  
+    }
+    if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == 'D'))
+    {
+        *key = LEFT;  
+    }
+   	if(tcsetattr(1, TCSANOW, &terminal1) != 0)
+	{
+		return -1;
+	}	
+
     return 0;
 }
 
@@ -126,6 +189,10 @@ sigint)
 	{
 		return -1;
 	}
+
+    tcgetattr(1, &terminal1);
+    terminal = terminal1;
+
 	if(tcgetattr(1, &terminal) < 0)
 	{
 		return -1;
@@ -134,6 +201,7 @@ sigint)
 	if(regime == 1)
 	{
 		terminal.c_lflag |= ICANON;
+        //tcgetattr(1, &terminal1);
 	}
 	else if(regime == 0)
 	{
@@ -160,5 +228,6 @@ sigint)
 		}
 	}
 	
+    tcsetattr(1, TCSANOW, &terminal);
     return 0;
 }

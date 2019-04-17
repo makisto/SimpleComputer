@@ -18,6 +18,7 @@ int main(void)
 
     enum keys key;
     key = NONE;
+    cursor = 0;
     int x, y, acc, inst;
     while(key != QUIT)
     {
@@ -28,10 +29,8 @@ int main(void)
         flagShow();
         keysShow();
         printBigChars();
-        mt_gotoXY(24, 1);
-        scanf("%d", &x);
         rk_readkey(&key);
-        /*switch(key) //Не проверялось
+        /*switch(key) //РќРµ РїСЂРѕРІРµСЂРµРЅРѕ
         {
         	case SAVE:
         		sc_memorySave("memory.dat");
@@ -40,21 +39,21 @@ int main(void)
         		sc_memoryLoad("memory.dat");
         		break;
         	case F5:
-        		printf("Введите значение аккумулятора\n");
+        		printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ Р°РєРєСѓРјСѓР»СЏС‚РѕСЂР°\n");
         		scanf("%d", &acc);
         		accumulator = acc;
         		break;
         	case F6:
-        		printf("Введите значение счётчика команд\n");
+        		printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ СЃС‡С‘С‚С‡РёРєР°\n");
         		scanf("%d", &inst);
         	    inst_counter = inst;
         		break;
         	case RUN:
-        		printf("Введите номер ячейки\n");
-        		scanf("%d", &x);
-        		printf("Введите желаемое значение")ж
-        		scanf("%d", &y);
-        		sc_memorySet(x, y);
+				printf("Р’С‹Р±РµСЂРёС‚Рµ СЏС‡РµР№РєСѓ РїР°РјСЏС‚Рё\n");
+		    	scanf("%d", &x);
+		    	printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ");
+		    	scanf("%d", &y);
+		    	sc_memorySet(x, y);	
         		break;
         	case RESET:
         		sc_memoryInit();
@@ -73,50 +72,56 @@ int main(void)
         	default:
         		break;
         }*/
-        if(KEY == SAVE)
+        if(key == SAVE)
         {
         	sc_memorySave("memory.dat");
 		}
-		if(KEY == LOAD)
+		if(key == LOAD)
 		{
-			sc_memoryLoad("memory,dat");
+			sc_memoryLoad("memory.dat");
 		}
-		if(KEY == F5)
+		if(key == F5)
 		{
-			printf("Введите значение аккумулятора\n");
+			printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ Р°РєРєСѓРјСѓР»СЏС‚РѕСЂР°\n");
         	scanf("%d", &acc);
         	accumulator = acc;
 		}
-		if(KEY == F6)
+		if(key == F6)
 		{
-		    printf("Введите значение счётчика команд\n");
+		    printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ СЃС‡С‘С‚С‡РёРєР°\n");
         	scanf("%d", &inst);
         	inst_counter = inst;	
 		}
-		if(KEY == RUN)
+		if(key == RUN)
 		{
-		    printf("Введите номер ячейки\n");
+		    printf("Р’С‹Р±РµСЂРёС‚Рµ СЏС‡РµР№РєСѓ РїР°РјСЏС‚Рё\n");
         	scanf("%d", &x);
-        	printf("Введите желаемое значение")ж
+        	printf("Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ\n");
         	scanf("%d", &y);
         	sc_memorySet(x, y);	
 		}
-        if(KEY == RESET)
+        if(key == RESET)
         {
             sc_memoryInit();
         	sc_regInit();
         	accumulator = 0;
         	inst_counter = 0;	
 		}
-		if(KEY == CANON)
-		{
-			printf("CANON\n");
-        	rk_mytermregime(1, 0, 0, 1, 1);
-		}
-		if(KEY == UNCANON)
-		{
-			printf("UNCANON\n");
-        	rk_mytermregime(0, 1, 1, 0, 0);
-		}		
+        if(key == UP)
+        {
+            cursor -= 10;
+        }
+        if(key == DOWN)
+        {
+            cursor += 10;
+        }
+        if(key == LEFT)
+        {
+            cursor--;
+        }
+        if(key == RIGHT)
+        {
+            cursor++;
+        }	
     }
 }

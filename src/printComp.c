@@ -8,6 +8,17 @@ void memoryShow()
     mt_clrscr();
     for(int i = 0; i < N; i++)
     {
+        if(i == cursor)
+        {
+            inst_counter = cursor;
+        	mt_setbgcolor(WHITE);
+        	mt_setfgcolor(RED);
+        }
+        else
+        {
+            mt_setbgcolor(DEFAULT);
+        	mt_setfgcolor(DEFAULT);
+        }
         if(i % 10 == 0)
         {
             mt_gotoXY((i / 10) + 3, 2);

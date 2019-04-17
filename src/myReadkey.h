@@ -18,8 +18,6 @@ enum keys
     F5,
     F6,
     QUIT,
-    CANON,
-    UNCANON,
     NONE
 };
 

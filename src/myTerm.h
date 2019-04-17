@@ -4,6 +4,8 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+int cursor;
+
 enum colors
 {
     BLACK, 
