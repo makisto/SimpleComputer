@@ -5,19 +5,19 @@
 
 void memoryShow()
 {
-    mt_clrscr();
+    //mt_clrscr();
     for(int i = 0; i < N; i++)
     {
         if(i == cursor)
         {
             inst_counter = cursor;
-        	mt_setbgcolor(WHITE);
-        	mt_setfgcolor(RED);
+            mt_setbgcolor(GREEN);
+            mt_setfgcolor(RED);
         }
         else
         {
             mt_setbgcolor(DEFAULT);
-        	mt_setfgcolor(DEFAULT);
+            mt_setfgcolor(DEFAULT);
         }
         if(i % 10 == 0)
         {
@@ -116,7 +116,6 @@ void keysShow()
     printf("f5 - accumulator");
     mt_gotoXY(21, 56);
     printf("f6 - instructionCounter");
-    mt_gotoXY(24, 0);
 } 
 
 void printBoxes()
@@ -134,7 +133,7 @@ void printBigChars()
 {
     int value;
     int bigchar[2];
-    char char_symbol[6];
+    char char_symbol[8];
 
     sc_memoryGet(inst_counter, &value);
     if(value >> 14)

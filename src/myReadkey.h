@@ -1,8 +1,11 @@
 #ifndef _MY_READKEY_
 #define _MY_READKEY_
 
+#include <fcntl.h>
+#include <sys/ioctl.h>
 #include <unistd.h>
 #include <termios.h>
+#include <sys/types.h>
 
 enum keys
 {
