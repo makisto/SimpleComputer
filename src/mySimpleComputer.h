@@ -11,6 +11,10 @@
 #define IMPULS 4
 #define WRONG_COMMAND 5
 
+#include <signal.h>
+#include <unistd.h>
+#include <sys/time.h>
+
 int RAM[N];
 int reg_flags;
 
@@ -24,5 +28,7 @@ int sc_regSet(int registr, int value);
 int sc_regGet(int registr, int * value);
 int sc_commandEncode(int command, int operand, int * value);
 int sc_commandDecode(int value, int * command, int * operand);
+void timer();
+void reset();
 
 #endif

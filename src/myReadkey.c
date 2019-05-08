@@ -34,6 +34,10 @@ int rk_readkey (enum keys * key)
     {
         *key = RUN;  
     }
+    if(buf[0] == 't')
+    {
+        *key = STEP;  
+    }
     if(buf[0] == 'i')
     {
         *key = RESET;  

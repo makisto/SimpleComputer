@@ -5,12 +5,10 @@
 
 void memoryShow()
 {
-    //mt_clrscr();
     for(int i = 0; i < N; i++)
     {
         if(i == cursor)
         {
-            inst_counter = cursor;
             mt_setbgcolor(GREEN);
             mt_setfgcolor(RED);
         }
@@ -51,8 +49,7 @@ void flagShow()
     mt_gotoXY(11, 75);
     printf("Flags");
     mt_gotoXY(12, 71);
-    sc_regGet(OVERFLOW, &fl);
-    if(fl == 0)
+    if(sc_regGet(OVERFLOW, &fl))
     {
         printf("O ");
     }
@@ -60,8 +57,7 @@ void flagShow()
     {
         printf(" ");
     }
-    sc_regGet(OUT_OF_MEMORY, &fl);
-    if(fl == 1)
+    if(sc_regGet(OUT_OF_MEMORY, &fl))
     {
         printf("M ");
     }
@@ -69,8 +65,7 @@ void flagShow()
     {
         printf(" ");
     }
-    sc_regGet(NULL_DEL, &fl);
-    if(fl == 0)
+    if(sc_regGet(NULL_DEL, &fl))
     {
         printf("N ");
     }
@@ -78,8 +73,7 @@ void flagShow()
     {
         printf(" ");
     }
-    sc_regGet(IMPULS, &fl);
-    if(fl == 0)
+    if(sc_regGet(IMPULS, &fl))
     {
         printf("I ");
     }
@@ -87,8 +81,7 @@ void flagShow()
     {
         printf(" ");
     }
-    sc_regGet(WRONG_COMMAND, &fl);
-    if(fl == 0)
+    if(sc_regGet(WRONG_COMMAND, &fl))
     {
         printf("C");
     }
@@ -125,8 +118,8 @@ void printBoxes()
     bc_box(5, 63, 2, 25);
     bc_box(8, 63, 2, 25);
     bc_box(11, 63, 2, 25);
-    bc_box(14, 55, 9, 33);
     bc_box(14, 1, 9, 52);
+    bc_box(14, 55, 9, 33);
 }    
 
 void printBigChars()
@@ -150,4 +143,15 @@ void printBigChars()
         bc_initbigchar(bigchar, char_symbol[i]);
         bc_printbigchar(bigchar, 15, 2 + (i * 9), RED, GREEN);
     }
+}
+
+void console()
+{
+    printBoxes();
+    keysShow();
+    flagShow();
+    CPUshow();
+    memoryShow();
+    printBigChars();
+    printf("\n");
 }

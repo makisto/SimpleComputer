@@ -12,5 +12,6 @@ void flagShow();
 void keysShow();
 void printBoxes();
 void printBigChars();
+void console();
 
 #endif

@@ -99,7 +99,7 @@ int sc_regGet (int registr, int * value)
     if ( (registr >= 1) && (registr <= 5))
     { 
         *value = (reg_flags >> (registr - 1)) & 0x1;
-        return 0;
+        return *value;
     }
     else
     {
@@ -166,4 +166,19 @@ int sc_commandDecode(int value, int * command, int * operand)
     {
         return -1;
     } 
+}
+
+void timer(int sig)
+{
+    inst_counter++;
+}
+
+void reset(int sig)
+{
+    //alarm(0);
+    sc_memoryInit();
+    sc_regInit();
+    sc_regSet(IMPULS, 1);
+    inst_counter = 0;
+    accumulator = 0;
 }
