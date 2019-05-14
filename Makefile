@@ -14,7 +14,7 @@ bin/SimpleComputer: build/Main.o $(OBJ)
 	$(GCC) build/Main.o $(OBJ) -o bin/SimpleComputer
 
 build/mySimpleComputer.o: src/mySimpleComputer.c src/mySimpleComputer.h
-	$(GCC) -c src/mySimpleComputer.c -o build/mySimpleComputer.o
+	$(GCC) -std=c99 -c src/mySimpleComputer.c -o build/mySimpleComputer.o
 
 build/myTerm.o: src/myTerm.c src/myTerm.h
 	$(GCC) -c src/myTerm.c -o build/myTerm.o
