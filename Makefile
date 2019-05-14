@@ -1,4 +1,4 @@
-GCC = gcc -Wall -Werror -std=c99
+GCC = gcc -Wall -Werror
 OBJ = build/mySimpleComputer.o build/myTerm.o build/myBigChars.o build/myReadkey.o build/printComp.o
 HEAD = src/mySimpleComputer.h src/myTerm.h src/myBigChars.h src/myReadkey.h src/printComp.h
 
@@ -32,10 +32,10 @@ build/Main.o: src/Main.c $(HEAD)
 	$(GCC) -c src/Main.c -o build/Main.o 
 
 bin/test:build/test.o $(OBJ)
-	$(GCC) $(FLAGS) build/test.o $(OBJ) -o bin/test
+	$(GCC) -std=c99 $(FLAGS) build/test.o $(OBJ) -o bin/test
 
 build/test.o:test/test.c 
-	$(GCC) -c -I thirdparty -I src -c test/test.c -o build/test.o
+	$(GCC) -std=c99 -c -I thirdparty -I src -c test/test.c -o build/test.o
 
 bin:
 	mkdir bin

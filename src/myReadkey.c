@@ -42,6 +42,10 @@ int rk_readkey (enum keys * key)
     {
         *key = RESET;  
     }
+    if(buf[0] == 'e')
+    {
+        *key = ENTER;  
+    }
     if((buf[0] == '\033') && (buf[1] == '[') && (buf[2] == '1') && (buf[3] == '5'))
     {
         *key = F5;  

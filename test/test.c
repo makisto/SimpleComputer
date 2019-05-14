@@ -9,56 +9,56 @@ int command;
 
 CTEST(adress, Correct)
 {
-    int result = sc_memorySet (34, 55);
+    int result = sc_memorySet(34, 55);
     int expected = 0;
     ASSERT_EQUAL(expected, result);
 }
 
 CTEST(adress, Incorrect)
 {
-    int result = sc_memorySet (884, 55);
+    int result = sc_memorySet(884, 55);
     int expected = -1;
     ASSERT_EQUAL(expected, result);
 }
 
 CTEST(value, Correct)
 {
-    int result = sc_memoryGet (34, &result);
+    int result = sc_memoryGet(34, &result);
     int expected = 0;
     ASSERT_EQUAL(expected, result);
 }
 
 CTEST(value, Incorrect)
 {
-    int result = sc_memoryGet (884, &result);
+    int result = sc_memoryGet(884, &result);
     int expected = -1;
     ASSERT_EQUAL(expected, result);
 }  
 
 CTEST(flag, Right)
 {
-    int result = sc_regSet (OVERFLOW, 1);
+    int result = sc_regSet(OVERFLOW, 1);
     int expected = 0;
     ASSERT_EQUAL(expected, result);
 } 
 
 CTEST(flag, Wrong)
 {
-    int result = sc_regSet (OVERFLOW, 75);
+    int result = sc_regSet(OVERFLOW, 75);
     int expected = -1;
     ASSERT_EQUAL(expected, result);
 } 
 
 CTEST(flag, Correct)
 {
-    int result = sc_regGet (OVERFLOW, &result);
-    int expected = 0;
+    int result = sc_regGet(OVERFLOW, &result);
+    int expected = 1;
     ASSERT_EQUAL(expected, result);
 } 
 
 CTEST(flag, Incorrect)
 {
-    int result = sc_regGet (11, &result);
+    int result = sc_regGet(11, &result);
     int expected = -1;
     ASSERT_EQUAL(expected, result);
 }

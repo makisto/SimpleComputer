@@ -2,10 +2,9 @@
 #define _MY_READKEY_
 
 #include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <termios.h>
 #include <sys/types.h>
+#include "myTerm.h"
 
 enum keys
 {
@@ -21,8 +20,9 @@ enum keys
     F5,
     F6,
     QUIT,
+    ENTER,
     NONE
-};
+}key;
 
 int rk_readkey (enum keys * key);
 int rk_mytermsave (void);

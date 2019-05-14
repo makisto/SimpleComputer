@@ -64,5 +64,3 @@ int mt_setbgcolor(enum colors color)
         return -1;
     }  
 }
-
-

@@ -102,7 +102,7 @@ void keysShow()
     mt_gotoXY(17, 56);
     printf("r - run");
     mt_gotoXY(18, 56);
-    printf("s - step");
+    printf("t - step");
     mt_gotoXY(19, 56);
     printf("i - reset");
     mt_gotoXY(20, 56);
@@ -146,12 +146,40 @@ void printBigChars()
 }
 
 void console()
-{
+{        
     printBoxes();
     keysShow();
     flagShow();
     CPUshow();
     memoryShow();
     printBigChars();
-    printf("\n");
+    printf("\nInput\\Output\n");
+}
+
+void settimer(struct itimerval * nval)
+{
+    nval->it_interval.tv_sec = 0;
+    nval->it_interval.tv_usec = 0;
+    nval->it_value.tv_sec = 0;
+    nval->it_value.tv_usec = 155500;
+}
+
+void timer()
+{
+    console();
+    inst_counter++;
+    cursor = inst_counter;
+    if (inst_counter == N) 
+    {
+        sc_regSet(IMPULS, 1);
+        cursor = inst_counter = 0;
+    }
+}
+
+void reset()
+{
+    sc_memoryInit();
+    sc_regInit();
+    sc_regSet(IMPULS, 1);
+    cursor = inst_counter = accumulator = 0;
 }

@@ -1,5 +1,6 @@
 #include "mySimpleComputer.h"
 #include "printComp.h"
+#include "myTerm.h"
 
 int mas_commands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 0x40, 0x41, 0x42, 0x43};
 
@@ -166,19 +167,4 @@ int sc_commandDecode(int value, int * command, int * operand)
     {
         return -1;
     } 
-}
-
-void timer(int sig)
-{
-    inst_counter++;
-}
-
-void reset(int sig)
-{
-    //alarm(0);
-    sc_memoryInit();
-    sc_regInit();
-    sc_regSet(IMPULS, 1);
-    inst_counter = 0;
-    accumulator = 0;
 }

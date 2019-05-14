@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "mySimpleComputer.h"
 #include "myTerm.h"
 #include "myBigChars.h"
@@ -7,11 +6,9 @@
 
 int main(void) 
 {    	
-    struct itimerval nval;
-
     sc_memoryInit();
     sc_regInit();
-    
+
     sc_memorySet(0, 0xABC);
     sc_memorySet(99, 0xDEF);
     sc_memorySet(45, 0x123);
@@ -20,27 +17,20 @@ int main(void)
   
     sc_regSet(IMPULS, 1);
 
-    enum keys key;
-    key = NONE;
-    cursor = 0;
     int y, acc, inst, value;
 
     signal(SIGALRM, timer);
     signal(SIGUSR1, reset);
 
-    nval.it_interval.tv_sec = 2;
-    nval.it_interval.tv_usec = 0;
-    nval.it_value.tv_sec = 0;
-    nval.it_value.tv_usec = 0;
+    settimer(&nval);
 
     while(key != QUIT)
     { 
         system("tput reset");
-        //mt_clrscr();
         console();
-        rk_readkey(&key);
         if(sc_regGet(IMPULS, &value))
         {
+            rk_readkey(&key);
 	    switch(key)
 	    {
                 case SAVE:
@@ -50,12 +40,10 @@ int main(void)
 		    sc_memoryLoad("memory.dat");
 		    break;
 		case F5:
-	            printf("Введите значение аккумулятора\n");
 		    scanf("%d", &acc);
 		    accumulator = acc;
 		    break;
 		case F6:
-	            printf("Введите значение счётчика\n");
 	            scanf("%d", &inst);
 		    inst_counter = inst;
 	            break;
@@ -63,51 +51,53 @@ int main(void)
 		    cursor -= 10;
                     if(cursor < 0)
                     {
-                        cursor += 100;
+                        cursor += N;
                     }
 		    break;
 		case DOWN:
 		    cursor += 10;
-                    if(cursor > 99)
+                    if(cursor > N - 1)
                     {
-                        cursor -= 100;
+                        cursor -= N;
                     }
 		    break;
 		case LEFT:
 		    cursor--;
                     if(cursor < 0)
                     {
-                        cursor = 99;
+                        cursor = N - 1;
                     }
 		    break;
 		case RIGHT:
 	            cursor++;
-                    if(cursor > 99)
+                    if(cursor > N - 1)
                     {
                         cursor = 0;
                     }
 		    break;
                 case RUN:
-	            sc_regSet(IMPULS, 0);
+                    sc_regSet(IMPULS, 0);
+                    cursor = 0;
+                    break;
+                case ENTER:
+	            scanf("%d", &y);
+                    sc_memorySet(cursor, y);
                     break;
                 case STEP:
-                    printf("Введите значение");
-	            scanf("%d", &y);
-                    sc_memorySet(inst_counter, y);
+                    printf("Coming soon\n");
+                    getchar();
                     break;
                 case RESET:
                     raise(SIGUSR1);
-                    cursor = 0;
                     break;
 		default:
 	            break;
 	    } 
         }
-        else 
+        else
         {
-            setitimer(ITIMER_REAL, &nval, 0);
+            setitimer(ITIMER_REAL, &nval, NULL);
             pause();
-            timer(SIGALRM);
         }
     }
 }
