@@ -100,4 +100,5 @@ int main(void)
             pause();
         }
     }
+    return 0;
 }
