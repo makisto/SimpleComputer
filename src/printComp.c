@@ -2,6 +2,7 @@
 #include "myTerm.h"
 #include "printComp.h"
 #include "myBigChars.h"
+#include "curs.h"
 
 void memoryShow()
 {
@@ -40,7 +41,7 @@ void CPUshow()
     mt_gotoXY(8, 72);
     printf("Operation");
     mt_gotoXY(9, 70);
-    printf("+00 : 00");
+    printf("+%02d : %02d", com, op);
 }
 
 void flagShow()
@@ -160,19 +161,21 @@ void settimer(struct itimerval * nval)
 {
     nval->it_interval.tv_sec = 0;
     nval->it_interval.tv_usec = 0;
-    nval->it_value.tv_sec = 0;
-    nval->it_value.tv_usec = 155500;
+    nval->it_value.tv_sec = 1;
+    nval->it_value.tv_usec = 0;
 }
 
 void timer()
 {
-    console();
-    inst_counter++;
-    cursor = inst_counter;
-    if (inst_counter == N) 
+    if(cu() == -1)
     {
         sc_regSet(IMPULS, 1);
         cursor = inst_counter = 0;
+    }
+    else
+    {
+        console();
+        cursor = inst_counter;
     }
 }
 

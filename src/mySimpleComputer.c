@@ -2,7 +2,7 @@
 #include "printComp.h"
 #include "myTerm.h"
 
-int mas_commands[] = {0x10, 0x11, 0x20, 0x21, 0x30, 0x31, 0x32, 0x33, 0x40, 0x41, 0x42, 0x43};
+int mas_commands[] = {0xA, 0xB, 0x14, 0x15, 0x1E, 0x1F, 0x20, 0x21, 0x28, 0x29, 0x2A, 0x2B, 0x40, 0x42, 0x47};
 
 int sc_memoryInit()
 {
@@ -112,12 +112,21 @@ int sc_commandEncode(int command, int operand, int * value)
 {
     int buf = 0; 
 
+    sc_regSet(OUT_OF_MEMORY, 0);
+    sc_regSet(WRONG_COMMAND, 0);
+
     for(int i = 0; i < commands; i++)
     {
         if(command == mas_commands[i])
         {
             buf = 1;
         }
+    }
+
+    if(buf == 0)
+    {
+        sc_regSet(WRONG_COMMAND, 1);
+        return -1;
     }
 
     if((buf == 1) && ((operand >= 0) && (operand < N)))
@@ -127,6 +136,7 @@ int sc_commandEncode(int command, int operand, int * value)
     }
     else
     {
+        sc_regSet(OUT_OF_MEMORY, 1);
         return -1;
     }
 }

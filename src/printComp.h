@@ -9,6 +9,8 @@
 struct itimerval nval;
 int accumulator;
 int inst_counter;
+int com;
+int op;
 
 void memoryShow();
 void CPUshow();

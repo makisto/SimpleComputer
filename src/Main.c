@@ -2,22 +2,17 @@
 #include "myTerm.h"
 #include "myBigChars.h"
 #include "myReadkey.h"
+#include "curs.h"
 #include "printComp.h"
 
 int main(void) 
 {    	
     sc_memoryInit();
     sc_regInit();
-
-    sc_memorySet(0, 0xABC);
-    sc_memorySet(99, 0xDEF);
-    sc_memorySet(45, 0x123);
-    sc_memorySet(72, 0x456);
-    sc_memorySet(14, 0x789);
   
     sc_regSet(IMPULS, 1);
 
-    int y, acc, inst, value;
+    int x, y, z, acc, inst, value, code;
 
     signal(SIGALRM, timer);
     signal(SIGUSR1, reset);
@@ -41,11 +36,26 @@ int main(void)
 		    break;
 		case F5:
 		    scanf("%d", &acc);
-		    accumulator = acc;
+                    if(acc > 0x7FFF)
+                    {
+                        sc_regSet(OVERFLOW, 1);
+                    }
+                    else
+                    {
+                        accumulator = acc;
+                    }
 		    break;
 		case F6:
 	            scanf("%d", &inst);
-		    inst_counter = inst;
+                    if((inst < 0) || (inst > N - 1))
+                    {
+                        sc_regSet(OUT_OF_MEMORY, 1); 
+                    }
+                    else
+                    {
+                        sc_regSet(OUT_OF_MEMORY, 0); 
+                        inst_counter = inst;
+                    }
 	            break;
 		case UP:
 		    cursor -= 10;
@@ -76,16 +86,33 @@ int main(void)
                     }
 		    break;
                 case RUN:
-                    sc_regSet(IMPULS, 0);
+                    sc_regInit();
                     cursor = 0;
                     break;
                 case ENTER:
-	            scanf("%d", &y);
-                    sc_memorySet(cursor, y);
+                    scanf("%d", &z);
+                    if(z == 0)
+                    {
+                        printf("Введите данные\n");
+                        scanf("%d", &x);
+	                scanf("%d", &y);
+                        if(sc_commandEncode(x, y, &code) == 0)
+                        {
+                            sc_memorySet(cursor, code);
+                        }
+                        else
+                        {
+                            x = y = 0;
+                        }
+                    }
+                    else
+                    {
+                        scanf("%d", &y);
+                        sc_memorySet(cursor, y);
+                    }
                     break;
                 case STEP:
-                    printf("Coming soon\n");
-                    getchar();
+                    cu();
                     break;
                 case RESET:
                     raise(SIGUSR1);
@@ -100,5 +127,4 @@ int main(void)
             pause();
         }
     }
-    return 0;
 }
