@@ -65,7 +65,7 @@ CTEST(flag, Incorrect)
 
 CTEST(command, Correct)
 {
-    int result = sc_commandEncode(0x10, operand, &result);
+    int result = sc_commandEncode(0xA, operand, &result);
     int expected = 0;
     ASSERT_EQUAL(expected, result);
 }
@@ -80,7 +80,7 @@ CTEST(command, Incorrect)
 CTEST(command, Right)
 {
     int result = sc_commandDecode(2256, &command, &operand);
-    int expected = 0;
+    int expected = -1;
     ASSERT_EQUAL(expected, result);
 }
 
