@@ -1,6 +1,6 @@
 GCC = gcc -Wall -Werror
-OBJ = build/mySimpleComputer.o build/myTerm.o build/myBigChars.o build/myReadkey.o build/curs.o build/printComp.o
-HEAD = src/mySimpleComputer.h src/myTerm.h src/myBigChars.h src/myReadkey.h src/curs.h src/printComp.h
+OBJ = build/mySimpleComputer.o build/myTerm.o build/myBigChars.o build/myReadkey.o build/curs.o build/printComp.o build/translator.o
+HEAD = src/mySimpleComputer.h src/myTerm.h src/myBigChars.h src/myReadkey.h src/curs.h src/printComp.h src/translator.h
 
 .PHONY: clean 
 
@@ -30,6 +30,9 @@ build/curs.o: src/curs.c src/curs.h
 
 build/printComp.o: src/printComp.c src/printComp.h
 	$(GCC) -std=c99 -c src/printComp.c -o build/printComp.o
+
+build/translator.o: src/translator.c src/translator.h
+	$(GCC) -std=c99 -c src/translator.c -o build/translator.o
 
 build/Main.o: src/Main.c $(HEAD)
 	$(GCC) -c src/Main.c -o build/Main.o 
