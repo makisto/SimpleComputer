@@ -1,0 +1,8 @@
+00 READ 09;rghfghftj
+01 READ 10;hdfhftgj
+02 ADD 09;;;;gfjfg
+03 SUB 10;jgfjgfj
+04 JZ 00;fdhfdh
+05 JNEG 06;fdhfdh
+06 LOAD 10;dfhfdhd
+07 HALT 00;fdhfdh

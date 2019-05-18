@@ -3,6 +3,7 @@
 #include "myBigChars.h"
 #include "myReadkey.h"
 #include "curs.h"
+#include "translator.h"
 #include "printComp.h"
 
 int main(void) 
@@ -32,7 +33,8 @@ int main(void)
 		    sc_memorySave("memory.dat");
 		    break;
 		case LOAD:
-		    sc_memoryLoad("memory.dat");
+                    translate();
+		    sc_memoryLoad("saveme.dat");
 		    break;
 		case F5:
 		    scanf("%d", &acc);
@@ -127,5 +129,4 @@ int main(void)
             pause();
         }
     }
-    return 0;
 }

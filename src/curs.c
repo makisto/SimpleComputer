@@ -47,7 +47,7 @@ int alu(int command, int operand)
             break;
         case 0x21:
             //printf("MUL\n");
-            if((0x777F / accumulator) < value)
+            if((0x777F / accumulator + 1) < value)
             {
                 sc_regSet(OVERFLOW, 1);
                 sc_regSet(IMPULS, 1);
