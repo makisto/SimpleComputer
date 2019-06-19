@@ -42,7 +42,7 @@ int sc_memoryGet (int address, int * value)
 
 int sc_memorySave (char * filename)
 {
-    FILE* f = fopen(filename, "wb+");
+    FILE * f = fopen(filename, "wb+");
     if(f == NULL)
     {  
         return -1;
@@ -54,7 +54,7 @@ int sc_memorySave (char * filename)
 
 int sc_memoryLoad (char * filename)
 {
-    FILE* f = fopen(filename, "rb+");
+    FILE * f = fopen(filename, "rb+");
     if(f == NULL)
     {
         return -1;    

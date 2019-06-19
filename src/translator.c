@@ -4,20 +4,18 @@
 #include "mySimpleComputer.h"
 #include "printComp.h"
 
-int translate()
+int translate(char * file, char * filename)
 {
     int mem, com1, op1, i;
     int a;
-    int value, value1;
-    char str[50];
-    char sep[10] = " \n";
+    int value;
+    char str[900];
+    char sep[10] = " \n;";
     char * buf;
     char * istr;
     char buf2[9999][4];
 
-    FILE * f;
-
-    f = fopen("file.sa", "r");
+    FILE * f = fopen("file.sa", "r+");
     if(f == NULL)
     {
         printf("ОШИБКА\n");
@@ -49,7 +47,7 @@ int translate()
         i = 0;
         while(istr != NULL)
         {
-            strncpy(buf2[i], istr, 5);
+            strncpy(buf2[i], istr, 10);
             istr = strtok(NULL, sep);
             switch(i)
             {
@@ -61,6 +59,7 @@ int translate()
                         return -1;
                     }
                     mem = a;
+                    printf("1 компонент - %s\n", buf2[i]);
                     break;
                 case 1:
                     if(strcmp(buf2[i], "READ") == 0)
@@ -115,40 +114,51 @@ int translate()
                     {
                         com1 = 0x40;
                     }
+                    else if(strcmp(buf2[i], "=") == 0)
+                    {
+                        com1 = 0;
+                    }
                     else
                     {
                         return -1;
                     }
+                    printf("2 компонент - %s\n", buf2[i]);
                     break;
                 case 2:
                     a = atoi(buf2[i]);
-                    if((a < 0) || (a > 99))
+                    if(com1 == 0)
                     {
-                        printf("ОШИБКА ЧТЕНИЯ\n");
-                        return -1;
-                    }
-                    op1 = a;
-                    break;
-                case 3:
-                    if(strcmp(buf2[i], ";") == 0)
-                    {
-                        break;
+                        if((a < 0) || (a > 0x7FFF))
+                        {
+                            printf("ОШИБКА ЧТЕНИЯ\n");
+                            return -1;
+                        }
+                        else
+                        {
+                            op1 = a;
+                        }
                     }
                     else
                     {
-                        return -1;
+                        op1 = a;
                     }
+                    printf("3 компонент - %s\n", buf2[i]);
                     break;
             }
-            sc_commandEncode(com1, op1, &value);
-            sc_memoryGet(mem, &value1);
-            sc_memorySet(mem, value);
-            //sc_memorySet(mem, value1);
             i++;
+        }
+        if(com1 == 0)
+        {
+            sc_memorySet(mem, op1);
+        }
+        else
+        {
+            sc_commandEncode(com1, op1, &value);
+            sc_memorySet(mem, value);
         }
     }
     fclose(f);
-    sc_memorySave("saveme.dat");
+    sc_memorySave(filename);
 
     return 0;  
 }

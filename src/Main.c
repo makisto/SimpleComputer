@@ -14,6 +14,7 @@ int main(void)
     sc_regSet(IMPULS, 1);
 
     int x, y, z, acc, inst, value, code;
+    char f, trans;
 
     signal(SIGALRM, timer);
     signal(SIGUSR1, reset);
@@ -22,7 +23,8 @@ int main(void)
 
     while(key != QUIT)
     { 
-        system("tput reset");
+        //system("tput reset");
+        mt_clrscr();
         console();
         if(sc_regGet(IMPULS, &value))
         {
@@ -30,13 +32,17 @@ int main(void)
 	    switch(key)
 	    {
                 case SAVE:
-		    sc_memorySave("memory.dat");
+                    printf("Введите имя файла\n");
+                    scanf("%s", &f);
+		    sc_memorySave(&f);
 		    break;
 		case LOAD:
-                    translate();
-		    sc_memoryLoad("saveme.dat");
+                    printf("Введите имя файла\n");
+                    scanf("%s", &f);
+		    sc_memoryLoad(&f);
 		    break;
 		case F5:
+                    printf("Значение аккумулятора:\n");
 		    scanf("%d", &acc);
                     if(acc > 0x7FFF)
                     {
@@ -48,6 +54,7 @@ int main(void)
                     }
 		    break;
 		case F6:
+                    printf("Значение счётчика:\n");
 	            scanf("%d", &inst);
                     if((inst < 0) || (inst > N - 1))
                     {
@@ -92,25 +99,29 @@ int main(void)
                     cursor = 0;
                     break;
                 case ENTER:
+                    printf("1 - Ручной ввод\n2 - Запуск транслятора\n");
                     scanf("%d", &z);
-                    if(z == 0)
+                    if(z == 1)
                     {
                         printf("Введите данные\n");
                         scanf("%d", &x);
 	                scanf("%d", &y);
-                        if(sc_commandEncode(x, y, &code) == 0)
+                        if(x == 0)
+                        {
+                            sc_memorySet(cursor, y);
+                        }
+                        else if(sc_commandEncode(x, y, &code) == 0)
                         {
                             sc_memorySet(cursor, code);
                         }
-                        else
-                        {
-                            x = y = 0;
-                        }
                     }
-                    else
+                    else if(z == 2)
                     {
-                        scanf("%d", &y);
-                        sc_memorySet(cursor, y);
+                        printf("Введите имя транслируемого файла\n");
+                        scanf("%s", &trans);
+                        printf("Введите имя исполняемого файла\n");
+                        scanf("%s", &f); 
+                        translate(&trans, &f);
                     }
                     break;
                 case STEP:
