@@ -14,7 +14,8 @@ int main(void)
     sc_regSet(IMPULS, 1);
 
     int x, y, z, acc, inst, value, code;
-    char f, trans;
+    char f; 
+    char t;
 
     signal(SIGALRM, timer);
     signal(SIGUSR1, reset);
@@ -23,7 +24,6 @@ int main(void)
 
     while(key != QUIT)
     { 
-        //system("tput reset");
         mt_clrscr();
         console();
         if(sc_regGet(IMPULS, &value))
@@ -118,10 +118,8 @@ int main(void)
                     else if(z == 2)
                     {
                         printf("Введите имя транслируемого файла\n");
-                        scanf("%s", &trans);
-                        printf("Введите имя исполняемого файла\n");
-                        scanf("%s", &f); 
-                        translate(&trans, &f);
+                        scanf("%s", &t);
+                        translate(&t);
                     }
                     break;
                 case STEP:

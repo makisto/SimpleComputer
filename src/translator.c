@@ -4,7 +4,7 @@
 #include "mySimpleComputer.h"
 #include "printComp.h"
 
-int translate(char * file, char * filename)
+int translate(char * file)
 {
     int mem, com1, op1, i;
     int a;
@@ -14,17 +14,16 @@ int translate(char * file, char * filename)
     char * buf;
     char * istr;
     char buf2[9999][4];
+    char filename;
 
-    FILE * f = fopen("file.sa", "r+");
+    FILE * f = fopen(file, "r+");
     if(f == NULL)
     {
         printf("ОШИБКА\n");
         return -1;
     }
-    else
-    {
-        printf("ВЫПОЛНЕНО\n");
-    }
+
+    sc_memoryInit();
 
     while(!feof(f))
     {
@@ -33,7 +32,6 @@ int translate(char * file, char * filename)
         {
             if(feof(f) != 0)
             {
-                printf("СЧИТАЛИ\n");
                 break;
             }
             else
@@ -42,7 +40,7 @@ int translate(char * file, char * filename)
                 break;
             }
         }
-
+ 
         istr = strtok(str, sep);
         i = 0;
         while(istr != NULL)
@@ -158,7 +156,9 @@ int translate(char * file, char * filename)
         }
     }
     fclose(f);
-    sc_memorySave(filename);
+    printf("Введите имя исполняемого файла\n");
+    scanf("%s", &filename);
+    sc_memorySave(&filename);
 
     return 0;  
 }
