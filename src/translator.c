@@ -17,6 +17,7 @@ int translate(char * file)
     char filename;
 
     FILE * f = fopen(file, "r+");
+
     if(f == NULL)
     {
         printf("ОШИБКА\n");

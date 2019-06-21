@@ -5,6 +5,7 @@
 #include "curs.h"
 #include "translator.h"
 #include "printComp.h"
+#include "basic.h"
 
 int main(void) 
 {    	
@@ -99,7 +100,7 @@ int main(void)
                     cursor = 0;
                     break;
                 case ENTER:
-                    printf("1 - Ручной ввод\n2 - Запуск транслятора\n");
+                    printf("1 - Ручной ввод\n2 - Запуск компилятора\n3 - Запуск транслятора\n");
                     scanf("%d", &z);
                     if(z == 1)
                     {
@@ -116,6 +117,12 @@ int main(void)
                         }
                     }
                     else if(z == 2)
+                    {
+                        printf("Введите имя компилируемого файла\n");
+                        scanf("%s", &t);
+                        basic(&t);
+                    }
+                    else if(z == 3)
                     {
                         printf("Введите имя транслируемого файла\n");
                         scanf("%s", &t);
