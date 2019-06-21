@@ -12,11 +12,16 @@ int basic(char * file)
     char * buf;
     char * istr;
     char buf2[9999][4];
+    int k = 0;
+    char buf3[9999][5];
+    int isIF = 0;
+    int isOP = 0;
+    int isJUMP = 0;
 
     FILE * f;
     FILE * f1;
 
-    f = fopen(file, "r");
+    f = fopen("file.bas", "r");
     f1 = fopen("file123.sa", "w+");
     
     if((f == NULL) || (f1 == NULL))
@@ -61,8 +66,8 @@ int basic(char * file)
                         printf("ОШИБКА ЧТЕНИЯ\n");
                         return -1;
                     }
-                    printf("%d ", a);
-                    fprintf(f1, "%s ", buf2[i]);
+                    printf("%d ", a + k);
+                    fprintf(f1, "%d ", a + k);
                     break;
                 case 1:
                     if(strcmp(buf2[i], "INPUT") == 0)
@@ -85,21 +90,154 @@ int basic(char * file)
                     }
                     else if(strcmp(buf2[i], "GOTO") == 0)
                     {
-                        strncpy(buf2[i], "JUMP", 5);
-                        printf("%s ", buf2[i]);
-                        fprintf(f1, "%s ", buf2[i]);
+                        if(isIF == 1)
+                        {
+                            printf("JNEG "); 
+                            fprintf(f1, "JNEG "); 
+                            isOP = 1; 
+                        }
+                        else
+                        {  
+                            strncpy(buf2[i], "JUMP", 5);
+                            printf("%s ", buf2[i]);
+                            fprintf(f1, "%s ", buf2[i]);
+                            isJUMP = 1;
+                        }
                     }
                     else if(strcmp(buf2[i], "LET") == 0)
                     {
-                        strncpy(buf2[i], "JNEG", 5);
-                        printf("%s ", buf2[i]);
-                        fprintf(f1, "%s ", buf2[i]);
+                        int beg_op, mid_op, end_op;
+                        int i1 = 0;
+                        int operation;
+                        strncpy(buf2[2], istr, 10);
+                        for(int i = 0; buf2[2][i] != '\0'; i++)
+                        {
+                            strncpy(buf3[i], &buf2[2][i], 1);     
+                            i1++;                 
+                        }
+                        for(int i = 0; i < i1; i++)
+                        {
+                            switch(i)
+                            {  
+                                case 0:
+                                    if(strcmp(buf3[i], "C") == 0)
+                                    {
+                                        beg_op = 67;  
+                                    }
+                                    else if(strcmp(buf3[i], "D") == 0)
+                                    {
+                                        beg_op = 68;  
+                                    }
+                                    break;
+                                case 2:
+                                    if(strcmp(buf3[i], "A") == 0)
+                                    {
+                                        mid_op = 65;
+                                        printf("LOAD %d\n", mid_op); 
+                                        fprintf(f1, "LOAD %d\n", mid_op); 
+                                        k++;
+                                    }
+                                    break;
+                                case 3:
+                                    if(strcmp(buf3[i], "+") == 0)
+                                    {
+                                        operation = 0;
+                                    }
+                                    if(strcmp(buf3[i], "-") == 0)
+                                    {
+                                        operation = 1;
+                                    }
+                                    if(strcmp(buf3[i], "/") == 0)
+                                    {
+                                        operation = 2;
+                                    }
+                                    if(strcmp(buf3[i], "*") == 0)
+                                    {
+                                        operation = 3;
+                                    }
+                                    break;
+                                case 4:
+                                    if(strcmp(buf3[i], "B") == 0)
+                                    {
+                                        end_op = 66;
+                                    }
+                                    switch(operation)
+                                    {
+                                        case 0:
+                                            printf("%d ADD %d\n", a + k, end_op); 
+                                            fprintf(f1, "%d ADD %d\n", a + k, end_op); 
+                                            break; 
+                                        case 1:
+                                            printf("%d SUB %d\n", a + k, end_op);
+                                            fprintf(f1, "%d SUB %d\n", a + k, end_op); 
+                                            break;  
+                                        case 2:
+                                            printf("%d DIVIDE %d\n", a + k, end_op); 
+                                            fprintf(f1, "%d DIVIDE %d\n", a + k, end_op); 
+                                            break;
+                                        case 3:
+                                            printf("%d MUL %d\n", a + k, end_op); 
+                                            fprintf(f1, "%d MUL %d\n", a + k, end_op); 
+                                            break;
+                                    } 
+                                    k++;
+                                    break;                              
+                            }
+                        }
+                        printf("%d STORE %d", a + k, beg_op); 
+                        fprintf(f1, "%d STORE %d", a + k, beg_op); 
                     }
                     else if(strcmp(buf2[i], "IF") == 0)
                     {
-                        strncpy(buf2[i], "JZ", 5);
-                        printf("%s ", buf2[i]);
-                        fprintf(f1, "%s ", buf2[i]);
+                        isIF = 1;
+                        int first_op, second_op;
+                        int i1 = 0;
+                        strncpy(buf2[2], istr, 10);
+                        for(int i = 0; buf2[2][i] != '\0'; i++)
+                        {
+                            strncpy(buf3[i], &buf2[2][i], 1);     
+                            i1++;              
+                        }
+                        char temp;
+                        strncpy(&temp, buf3[2], 1);
+                        strncpy(buf3[2], buf3[1], 1);
+                        strncpy(buf3[1], &temp, 1);
+                        for(int i = 0; i < i1; i++)
+                        {
+                            switch(i)
+                            {  
+                                case 0:
+                                    if(strcmp(buf3[i], "C") == 0)
+                                    {
+                                        first_op = 67;  
+                                    }
+                                    break;
+                                case 1:
+                                    if(strcmp(buf3[i], "D") == 0)
+                                    {
+                                        second_op = 68;
+                                    }
+                                    break; 
+                                case 2:
+                                    if(strcmp(buf3[i], "<") == 0)
+                                    {
+                                        printf("LOAD %d\n", second_op); 
+                                        fprintf(f1, "LOAD %d\n", second_op); 
+                                        k++;   
+                                        printf("%d SUB %d", a + k, first_op); 
+                                        fprintf(f1, "%d SUB %d", a + k, first_op); 
+                                    }
+                                    else if(strcmp(buf3[i], ">") == 0)
+                                    {
+                                       printf("LOAD %d\n", first_op); 
+                                       fprintf(f1, "LOAD %d\n", first_op); 
+                                       k++; 
+                                       printf("%d SUB %d", a + k, second_op); 
+                                       fprintf(f1, "%d SUB %d", a + k, second_op);   
+                                    }
+                                    break;                            
+                            }
+                        }
                     }
                     else
                     {
@@ -263,11 +401,21 @@ int basic(char * file)
                         printf("%s", buf2[i]);
                         fprintf(f1, "%s", buf2[i]);
                     }
-                    else
+                    else if(isOP == 1 || isJUMP == 1)
                     {
                         a = atoi(buf2[i]);
-                        printf("%d", a);
-                        fprintf(f1, "%s", buf2[i]);
+                        if((a < 0) || (a > 99))
+                        {
+                            printf("ОШИБКА ЧТЕНИЯ\n");
+                            return -1;
+                        }
+                        printf("%d", a + k);
+                        fprintf(f1, "%d", a + k);
+                        isIF = isOP = isJUMP = 0;
+                    }
+                    else if(strcmp(buf2[i], " ") == 0)
+                    {
+                        break;
                     }
                     break;
                 case 3:
