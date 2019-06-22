@@ -17,6 +17,7 @@ int basic(char * file)
     int isIF = 0;
     int isOP = 0;
     int isJUMP = 0;
+    int isCONST = 0;
 
     FILE * f;
     FILE * f1;
@@ -109,11 +110,20 @@ int basic(char * file)
                         int beg_op, mid_op, end_op;
                         int i1 = 0;
                         int operation;
+                        char CONST[512];
                         strncpy(buf2[2], istr, 10);
                         for(int i = 0; buf2[2][i] != '\0'; i++)
                         {
-                            strncpy(buf3[i], &buf2[2][i], 1);     
-                            i1++;                 
+                            strncpy(buf3[i], &buf2[2][i], 1);   
+                            i1++; 
+                            if((strcmp(buf3[i], "1") == 0) || (strcmp(buf3[i], "2") == 0) || (strcmp(buf3[i], "3") == 0) || (strcmp(buf3[i], "4") == 0) || (strcmp(buf3[i], "5") == 0) || (strcmp(buf3[i], "6") == 0) || (strcmp(buf3[i], "7") == 0) || (strcmp(buf3[i], "8") == 0) || (strcmp(buf3[i], "9") == 0))
+                            {
+                                isCONST = 1;                             
+                            }
+                        }
+                        if(isCONST == 1)
+                        {
+                            snprintf(CONST, sizeof(CONST), "%s%s", buf3[2], buf3[3]);
                         }
                         for(int i = 0; i < i1; i++)
                         {
@@ -127,6 +137,12 @@ int basic(char * file)
                                     else if(strcmp(buf3[i], "D") == 0)
                                     {
                                         beg_op = 68;  
+                                    }
+                                    if(isCONST == 1)
+                                    {
+                                        printf("%d = %s", beg_op, CONST);
+                                        fprintf(f1, "%d = %s", beg_op, CONST);
+                                        //k++;
                                     }
                                     break;
                                 case 2:
@@ -184,24 +200,48 @@ int basic(char * file)
                                     break;                              
                             }
                         }
-                        printf("%d STORE %d", a + k, beg_op); 
-                        fprintf(f1, "%d STORE %d", a + k, beg_op); 
+                        if(isCONST == 1)
+                        {
+                            k--;
+                            break;
+                        }
+                        else
+                        {
+                            printf("%d STORE %d", a + k, beg_op); 
+                            fprintf(f1, "%d STORE %d", a + k, beg_op); 
+                        }
+                        isCONST = 0;
                     }
                     else if(strcmp(buf2[i], "IF") == 0)
                     {
+                        isCONST = 0;
                         isIF = 1;
                         int first_op, second_op;
                         int i1 = 0;
+                        char temp, CONST[512];
                         strncpy(buf2[2], istr, 10);
                         for(int i = 0; buf2[2][i] != '\0'; i++)
                         {
                             strncpy(buf3[i], &buf2[2][i], 1);     
                             i1++;              
+                            if((strcmp(buf3[i], "1") == 0) || (strcmp(buf3[i], "2") == 0) || (strcmp(buf3[i], "3") == 0) || (strcmp(buf3[i], "4") == 0) || (strcmp(buf3[i], "5") == 0) || (strcmp(buf3[i], "6") == 0) || (strcmp(buf3[i], "7") == 0) || (strcmp(buf3[i], "8") == 0) || (strcmp(buf3[i], "9") == 0))
+                            {
+                                isCONST = 1;                             
+                            }
                         }
-                        char temp;
-                        strncpy(&temp, buf3[2], 1);
-                        strncpy(buf3[2], buf3[1], 1);
-                        strncpy(buf3[1], &temp, 1);
+                        if(isCONST == 1)
+                        {
+                            snprintf(CONST, sizeof(CONST), "%s%s", buf3[2], buf3[3]);
+                            printf("%d = %s\n", 90, CONST);
+                            fprintf(f1, "%d = %s\n", 90, CONST); 
+                            //k++;
+                        }
+                        else
+                        {
+                            strncpy(&temp, buf3[2], 1);
+                            strncpy(buf3[2], buf3[1], 1);
+                            strncpy(buf3[1], &temp, 1);
+                        }
                         for(int i = 0; i < i1; i++)
                         {
                             switch(i)
@@ -213,13 +253,25 @@ int basic(char * file)
                                     }
                                     break;
                                 case 1:
-                                    if(strcmp(buf3[i], "D") == 0)
+                                    if(isCONST == 1)
+                                    {
+                                        printf("%d LOAD %d\n", a + k, 90);
+                                        fprintf(f1, "%d LOAD %d\n", a + k, 90); 
+                                        k++;
+                                        printf("%d SUB %d", a + k, first_op); 
+                                        fprintf(f1, "%d SUB %d", a + k, first_op); 
+                                    }
+                                    else if(strcmp(buf3[i], "D") == 0)
                                     {
                                         second_op = 68;
                                     }
                                     break; 
                                 case 2:
-                                    if(strcmp(buf3[i], "<") == 0)
+                                    if(isCONST == 1)
+                                    {
+                                        break;
+                                    }
+                                    else if(strcmp(buf3[i], "<") == 0)
                                     {
                                         printf("LOAD %d\n", second_op); 
                                         fprintf(f1, "LOAD %d\n", second_op); 
@@ -229,11 +281,11 @@ int basic(char * file)
                                     }
                                     else if(strcmp(buf3[i], ">") == 0)
                                     {
-                                       printf("LOAD %d\n", first_op); 
-                                       fprintf(f1, "LOAD %d\n", first_op); 
-                                       k++; 
-                                       printf("%d SUB %d", a + k, second_op); 
-                                       fprintf(f1, "%d SUB %d", a + k, second_op);   
+                                        printf("LOAD %d\n", first_op); 
+                                        fprintf(f1, "LOAD %d\n", first_op); 
+                                        k++; 
+                                        printf("%d SUB %d", a + k, second_op); 
+                                        fprintf(f1, "%d SUB %d", a + k, second_op);   
                                     }
                                     break;                            
                             }
