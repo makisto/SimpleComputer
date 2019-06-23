@@ -15,6 +15,7 @@ int translate(char * file)
     char * istr;
     char buf2[9999][4];
     char filename;
+    int isCONST = 0;
 
     FILE * f = fopen(file, "r+");
 
@@ -58,7 +59,6 @@ int translate(char * file)
                         return -1;
                     }
                     mem = a;
-                    printf("1 компонент - %s\n", buf2[i]);
                     break;
                 case 1:
                     if(strcmp(buf2[i], "READ") == 0)
@@ -119,11 +119,27 @@ int translate(char * file)
                     }
                     else
                     {
-                        return -1;
+                        isCONST = 1;
+                        a = atoi(buf2[i]);
+                        if((a < 0) || (a > 99))
+                        {
+                            printf("ОШИБКА ЧТЕНИЯ\n");
+                            return -1;
+                        }
+                        mem = a;
+                        com1 = 0;
+                        break;
                     }
-                    printf("2 компонент - %s\n", buf2[i]);
+                    /*else
+                    {
+                        return -1;
+                    }*/
                     break;
                 case 2:
+                    if(isCONST == 1)
+                    {
+                        break;
+                    }
                     a = atoi(buf2[i]);
                     if(com1 == 0)
                     {
@@ -141,8 +157,23 @@ int translate(char * file)
                     {
                         op1 = a;
                     }
-                    printf("3 компонент - %s\n", buf2[i]);
                     break;
+                case 3:
+                    if(isCONST == 0)
+                    {
+                        break;
+                    }
+                    a = atoi(buf2[i]);
+                    if((a < 0) || (a > 0x7FFF))
+                    {
+                        printf("ОШИБКА ЧТЕНИЯ\n");
+                        return -1;
+                    }
+                    else
+                    {
+                        op1 = a;
+                    }
+                    isCONST = 0;
             }
             i++;
         }
