@@ -1,460 +1,321 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "translator.h"
 
-int basic(char * file)
+int count_value(char value)
 {
-    int i;
-    int a;
-    char str[50];
-    char sep[10] = " \n";
-    char * buf;
-    char * istr;
-    char buf2[9999][4];
-    int k = 0;
-    char buf3[9999][5];
-    int isIF = 0;
-    int isOP = 0;
-    int isJUMP = 0;
-    int isCONST = 0;
+    int val = 0;
 
-    FILE * f;
-    FILE * f1;
-
-    f = fopen("file.bas", "r");
-    f1 = fopen("file123.sa", "w+");
-    
-    if((f == NULL) || (f1 == NULL))
+    if(strcmp(&value, "A") == 0)
     {
-        printf("ОШИБКА\n");
+        val = 68;
+    }
+    else if(strcmp(&value, "B") == 0)
+    {
+        val = 69;
+    }
+    else if(strcmp(&value, "C") == 0)
+    {
+        val = 70;
+    }
+    else if(strcmp(&value, "D") == 0)
+    {
+        val = 71;
+    }
+    else if(strcmp(&value, "E") == 0)
+    {
+        val = 72;
+    }
+
+    return val;
+}
+
+
+int basic(char * filename)
+{
+    char buf[20];
+    char c;
+    char symbol;
+    int const_op;
+    int goto_op;
+    int as_mem = -1; 
+    int bas_mem = -1;
+    int end_flag = 1;
+    int i = 0;
+    int operand = 0;
+    int n[100];
+    int isIF = 0;
+    int isMath = 0;
+
+    FILE * file1 = fopen(filename, "rt");
+    FILE * file2 = fopen("file123.sa", "wt");
+    if((file1 == NULL) || (file2 == NULL))
+    {
         return -1;
     }
 
-    while(!feof(f))
+    do
     {
-        buf = fgets(str, sizeof(str), f);       
-        if(buf == NULL)
+        fscanf(file1, "%s", buf);
+        if(!strcmp(buf, "IF"))
         {
-            if(feof(f) != 0)
+            //printf("1\n");
+            as_mem++;
+            bas_mem++;
+            n[bas_mem] = as_mem;
+            as_mem += 2;
+            //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);
+            isIF = 1;
+	}
+	else if(!strcmp(buf, "INPUT"))
+	{
+            //printf("2\n");
+            as_mem++;
+            bas_mem++;
+            n[bas_mem] = as_mem;
+            //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);
+	}
+	else if(!strcmp(buf, "OUTPUT"))
+	{
+            //printf("3\n");
+            as_mem++;
+            bas_mem++;
+            n[bas_mem] = as_mem;
+            //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);
+	}
+	else if(!strcmp(buf, "GOTO"))
+	{	
+            if(isIF == 1)
             {
-                break;
+                isIF = 0;
+                continue;
             }
             else
             {
-                printf("ОШИБКА ЧТЕНИЯ\n");
-                break;
+                //printf("4\n");
+                as_mem++;
+                bas_mem++;
+                n[bas_mem] = as_mem;
+                //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);
             }
         }
-
-        istr = strtok(str, sep);
-        i = 0;
-        while(istr != NULL)
+        else if(!strcmp(buf, "LET"))
         {
-            strncpy(buf2[i], istr, 10);
-            istr = strtok(NULL, sep);
-            switch(i)
+            //printf("5\n");
+            bas_mem++;
+            fscanf(file1, " %c=", &symbol);
+            const_op = fscanf(file1, "%d", &operand);
+            if(const_op == 0)	
             {
-                case 0:
-                    a = atoi(buf2[i]);
-                    if((a < 0) || (a > 99))
+                as_mem++;
+                n[bas_mem] = as_mem;
+                //as_mem += 2;
+                fscanf(file1, "%s", buf);			
+                i = 0;
+                do
+                {
+                    if((buf[i] == '+') || (buf[i] == '-') || (buf[i] == '*') || (buf[i] == '/'))
                     {
-                        printf("ОШИБКА ЧТЕНИЯ\n");
-                        return -1;
+                        as_mem += 2;
+                        isMath = 1;
                     }
-                    fprintf(f1, "%d ", a + k);
-                    break;
-                case 1:
-                    if(strcmp(buf2[i], "INPUT") == 0)
+                    i++;
+                }while(buf[i] != '\0');
+                if(isMath == 0)
+                {
+                    as_mem++;
+                }
+            }
+            else 
+            {
+                n[bas_mem] = count_value(symbol);          
+            }
+            isMath = 0;	
+            //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);	  
+	}
+        else if(!strcmp(buf, "REM"))
+        {
+            //printf("6\n");
+            continue;
+        }	
+	else if(!strcmp(buf, "END"))
+	{
+            //printf("7\n");
+            bas_mem++;
+            as_mem++;
+            n[bas_mem] = as_mem;
+            end_flag = 0;
+            //printf("%d - %d - %d\n", bas_mem, n[bas_mem], as_mem);
+        }
+    }while(end_flag);
+
+    fseek(file1, 0, SEEK_SET);
+
+    as_mem = -1; 
+    end_flag = 1; 
+ 
+    do
+    {	
+        fscanf(file1, "%s", buf);
+        if (!strcmp(buf, "IF"))
+        {
+            fscanf(file1, " %c%c", &c, &symbol);
+            switch(symbol)
+            {
+                case '<': 
+                    const_op = fscanf(file1, "%d", &operand);
+                    if(const_op == 0)
                     {
-                        strncpy(buf2[i], "READ", 5);
-                        fprintf(f1, "%s ", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "OUTPUT") == 0)
-                    {
-                        strncpy(buf2[i], "WRITE", 6);
-                        fprintf(f1, "%s ", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "END") == 0)
-                    {
-                        strncpy(buf2[i], "HALT", 5);
-                        fprintf(f1, "%s ", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "GOTO") == 0)
-                    {
-                        if(isIF == 1)
-                        {
-                            fprintf(f1, "JNEG "); 
-                            isOP = 1; 
-                        }
-                        else
-                        {  
-                            strncpy(buf2[i], "JUMP", 5);
-                            fprintf(f1, "%s ", buf2[i]);
-                            isJUMP = 1;
-                        }
-                    }
-                    else if(strcmp(buf2[i], "LET") == 0)
-                    {
-                        int beg_op, mid_op, end_op;
-                        int i1 = 0;
-                        int operation;
-                        char CONST[512];
-                        strncpy(buf2[2], istr, 10);
-                        for(int i = 0; buf2[2][i] != '\0'; i++)
-                        {
-                            strncpy(buf3[i], &buf2[2][i], 1);   
-                            i1++; 
-                            if((strcmp(buf3[i], "1") == 0) || (strcmp(buf3[i], "2") == 0) || (strcmp(buf3[i], "3") == 0) || (strcmp(buf3[i], "4") == 0) || (strcmp(buf3[i], "5") == 0) || (strcmp(buf3[i], "6") == 0) || (strcmp(buf3[i], "7") == 0) || (strcmp(buf3[i], "8") == 0) || (strcmp(buf3[i], "9") == 0))
-                            {
-                                isCONST = 1;                             
-                            }
-                        }
-                        if(isCONST == 1)
-                        {
-                            snprintf(CONST, sizeof(CONST), "%s%s", buf3[2], buf3[3]);
-                        }
-                        for(int i = 0; i < i1; i++)
-                        {
-                            switch(i)
-                            {  
-                                case 0:
-                                    if(strcmp(buf3[i], "C") == 0)
-                                    {
-                                        beg_op = 67;  
-                                    }
-                                    else if(strcmp(buf3[i], "D") == 0)
-                                    {
-                                        beg_op = 68;  
-                                    }
-                                    if(isCONST == 1)
-                                    {
-                                        fprintf(f1, "%d = %s", beg_op, CONST);
-                                        //k++;
-                                    }
-                                    break;
-                                case 2:
-                                    if(strcmp(buf3[i], "A") == 0)
-                                    {
-                                        mid_op = 65;
-                                        fprintf(f1, "LOAD %d\n", mid_op); 
-                                        k++;
-                                    }
-                                    break;
-                                case 3:
-                                    if(strcmp(buf3[i], "+") == 0)
-                                    {
-                                        operation = 0;
-                                    }
-                                    if(strcmp(buf3[i], "-") == 0)
-                                    {
-                                        operation = 1;
-                                    }
-                                    if(strcmp(buf3[i], "/") == 0)
-                                    {
-                                        operation = 2;
-                                    }
-                                    if(strcmp(buf3[i], "*") == 0)
-                                    {
-                                        operation = 3;
-                                    }
-                                    break;
-                                case 4:
-                                    if(strcmp(buf3[i], "B") == 0)
-                                    {
-                                        end_op = 66;
-                                    }
-                                    switch(operation)
-                                    {
-                                        case 0:
-                                            fprintf(f1, "%d ADD %d\n", a + k, end_op); 
-                                            break; 
-                                        case 1:
-                                            fprintf(f1, "%d SUB %d\n", a + k, end_op); 
-                                            break;  
-                                        case 2:
-                                            fprintf(f1, "%d DIVIDE %d\n", a + k, end_op); 
-                                            break;
-                                        case 3:
-                                            fprintf(f1, "%d MUL %d\n", a + k, end_op); 
-                                            break;
-                                    } 
-                                    k++;
-                                    break;                              
-                            }
-                        }
-                        if(isCONST == 1)
-                        {
-                            k--;
-                            break;
-                        }
-                        else
-                        {
-                            fprintf(f1, "%d STORE %d", a + k, beg_op); 
-                        }
-                        isCONST = 0;
-                    }
-                    else if(strcmp(buf2[i], "IF") == 0)
-                    {
-                        isCONST = 0;
-                        isIF = 1;
-                        int first_op, second_op;
-                        int i1 = 0;
-                        char temp, CONST[512];
-                        strncpy(buf2[2], istr, 10);
-                        for(int i = 0; buf2[2][i] != '\0'; i++)
-                        {
-                            strncpy(buf3[i], &buf2[2][i], 1);     
-                            i1++;              
-                            if((strcmp(buf3[i], "1") == 0) || (strcmp(buf3[i], "2") == 0) || (strcmp(buf3[i], "3") == 0) || (strcmp(buf3[i], "4") == 0) || (strcmp(buf3[i], "5") == 0) || (strcmp(buf3[i], "6") == 0) || (strcmp(buf3[i], "7") == 0) || (strcmp(buf3[i], "8") == 0) || (strcmp(buf3[i], "9") == 0))
-                            {
-                                isCONST = 1;                             
-                            }
-                        }
-                        if(isCONST == 1)
-                        {
-                            snprintf(CONST, sizeof(CONST), "%s%s", buf3[2], buf3[3]);
-                            fprintf(f1, "%d = %s\n", 90, CONST); 
-                            //k++;
-                        }
-                        else
-                        {
-                            strncpy(&temp, buf3[2], 1);
-                            strncpy(buf3[2], buf3[1], 1);
-                            strncpy(buf3[1], &temp, 1);
-                        }
-                        for(int i = 0; i < i1; i++)
-                        {
-                            switch(i)
-                            {  
-                                case 0:
-                                    if(strcmp(buf3[i], "C") == 0)
-                                    {
-                                        first_op = 67;  
-                                    }
-                                    break;
-                                case 1:
-                                    if(isCONST == 1)
-                                    {
-                                        if(strcmp(buf3[i], ">") == 0)
-                                        {
-                                            fprintf(f1, "%d LOAD %d\n", a + k, 90); 
-                                            k++;
-                                            fprintf(f1, "%d SUB %d", a + k, first_op);   
-                                        }
-                                        else if(strcmp(buf3[i], "<") == 0)
-                                        {
-                                            fprintf(f1, "%d LOAD %d\n", a + k, first_op); 
-                                            k++;
-                                            fprintf(f1, "%d SUB %d", a + k, 90);   
-                                        }
-                                    }
-                                    else if(strcmp(buf3[i], "D") == 0)
-                                    {
-                                        second_op = 68;
-                                    }
-                                    break; 
-                                case 2:
-                                    if(isCONST == 1)
-                                    {
-                                        break;
-                                    }
-                                    else if(strcmp(buf3[i], ">") == 0)
-                                    {
-                                        fprintf(f1, "LOAD %d\n", second_op); 
-                                        k++;   
-                                        fprintf(f1, "%d SUB %d", a + k, first_op); 
-                                    }
-                                    else if(strcmp(buf3[i], "<") == 0)
-                                    { 
-                                        fprintf(f1, "LOAD %d\n", first_op); 
-                                        k++; 
-                                        fprintf(f1, "%d SUB %d", a + k, second_op);   
-                                    }
-                                    break;                            
-                            }
-                        }
+                        fscanf(file1, "%c", &symbol);
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, count_value(symbol));
+                        as_mem++;
+                        fprintf(file2, "%d JNEG %d\n", as_mem, n[goto_op / 10]);
                     }
                     else
                     {
-                        return -1;
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        fprintf(file2, "%d = %d\n", 90, operand);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, 90);
+                        as_mem++;
+                        fprintf(file2, "%d JNEG %d\n", as_mem, n[goto_op / 10]);
                     }
                     break;
-                case 2:
-                    if(strcmp(buf2[i], "A") == 0)
+                case '>':
+                    const_op = fscanf(file1, "%d", &operand);
+                    if(const_op == 0)
                     {
-                        strncpy(buf2[i], "65", 5);
-                        fprintf(f1, "%s", buf2[i]);
+                        fscanf(file1, "%c", &symbol);
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, count_value(symbol));
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2, "%d JNEG %d\n", as_mem, n[goto_op / 10]);
                     }
-                    else if(strcmp(buf2[i], "B") == 0)
+                    else
                     {
-                        strncpy(buf2[i], "66", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "C") == 0)
-                    {
-                        strncpy(buf2[i], "67", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "D") == 0)
-                    {
-                        strncpy(buf2[i], "68", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "E") == 0)
-                    {
-                        strncpy(buf2[i], "69", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "F") == 0)
-                    {
-                        strncpy(buf2[i], "70", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "G") == 0)
-                    {
-                        strncpy(buf2[i], "71", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "H") == 0)
-                    {
-                        strncpy(buf2[i], "72", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "I") == 0)
-                    {
-                        strncpy(buf2[i], "73", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "J") == 0)
-                    {
-                        strncpy(buf2[i], "74", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "K") == 0)
-                    {
-                        strncpy(buf2[i], "75", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "L") == 0)
-                    {
-                        strncpy(buf2[i], "76", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "M") == 0)
-                    {
-                        strncpy(buf2[i], "77", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "N") == 0)
-                    {
-                        strncpy(buf2[i], "78", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "O") == 0)
-                    {
-                        strncpy(buf2[i], "79", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "P") == 0)
-                    {
-                        strncpy(buf2[i], "80", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "Q") == 0)
-                    {
-                        strncpy(buf2[i], "81", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "R") == 0)
-                    {
-                        strncpy(buf2[i], "82", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "S") == 0)
-                    {
-                        strncpy(buf2[i], "83", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "T") == 0)
-                    {
-                        strncpy(buf2[i], "84", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "U") == 0)
-                    {
-                        strncpy(buf2[i], "85", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "V") == 0)
-                    {
-                        strncpy(buf2[i], "86", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "W") == 0)
-                    {
-                        strncpy(buf2[i], "87", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "X") == 0)
-                    {
-                        strncpy(buf2[i], "88", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "Y") == 0)
-                    {
-                        strncpy(buf2[i], "89", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(strcmp(buf2[i], "Z") == 0)
-                    {
-                        strncpy(buf2[i], "90", 5);
-                        fprintf(f1, "%s", buf2[i]);
-                    }
-                    else if(isOP == 1 || isJUMP == 1)
-                    {
-                        a = atoi(buf2[i]);
-                        if((a < 0) || (a > 99))
-                        {
-                            printf("ОШИБКА ЧТЕНИЯ\n");
-                            return -1;
-                        }
-                        if(a == 0)
-                        {
-                            fprintf(f1, "%d", a);
-                        } 
-                        else
-                        {
-                            fprintf(f1, "%d", a + k);
-                        }
-                        isIF = isOP = isJUMP = 0;
-                    }
-                    else if(strcmp(buf2[i], " ") == 0)
-                    {
-                        break;
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        fprintf(file2, "%d = %d\n", 90, operand);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, 90);
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2, "%d JNEG %d\n", as_mem, n[goto_op / 10]);
                     }
                     break;
-                case 3:
-                    if(strcmp(buf2[i], "REM") == 0)
+                case '=':
+                    const_op = fscanf(file1, "%d", &operand);
+                    if(const_op == 0)
                     {
-                        strncpy(buf2[i], ";", 5);
-                        fprintf(f1, "%s ", buf2[i]);
+                        fscanf(file1, "%c", &symbol);
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, count_value(symbol));
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2, "%d JZ %d\n", as_mem, n[goto_op / 10]);
                     }
-                    break;
-                    if(strcmp(buf2[2], " ") == 0)
+                    else
                     {
-                        break;
+                        fscanf(file1, " GOTO %d", &goto_op);
+                        fprintf(file2, "%d = %d\n", 90, operand);
+                        as_mem++;
+                        fprintf(file2, "%d LOAD %d\n", as_mem, count_value(c));
+                        as_mem++;
+                        fprintf(file2,"%d SUB %d\n", as_mem, 90);
+                        as_mem++;
+                        fprintf(file2, "%d JZ %d\n", as_mem, n[goto_op / 10]);
                     }
                     break;
             }
-            i++;
         }
-        fprintf(f1, "\n");
-    }
-    fclose(f);
-    fclose(f1);
+        else if(!strcmp(buf, "INPUT"))
+        {
+            as_mem++;
+            fscanf(file1, " %c", &c);
+            fprintf(file2, "%d READ %d\n", as_mem, count_value(c));
+        }
+        else if(!strcmp(buf, "OUTPUT"))
+        {
+            as_mem++;
+            fscanf(file1, " %c", &c);
+            fprintf(file2, "%d WRITE %d\n", as_mem, count_value(c));
+        }
+        else if(!strcmp(buf, "GOTO"))
+        {	
+            as_mem++;
+            fscanf(file1, "%d", &operand);
+            fprintf(file2, "%d JUMP %d\n", as_mem, n[operand / 10]);
+	}
+        else if(!strcmp(buf, "LET"))
+        {
+            fscanf(file1, " %c=", &symbol);
+            const_op = fscanf(file1, "%d", &operand);
+            if(const_op == 0)	
+            {
+                fscanf(file1, "%s", buf);
+                i = 0;			
+                as_mem++;
+                fprintf(file2, "%d LOAD %d\n", as_mem, count_value(buf[i]));
+                do
+                {
+                    if(buf[i] == '+')
+                    {
+                        as_mem++;
+                        fprintf(file2, "%d ADD %d\n", as_mem, count_value(buf[i + 1]));
+                    }
+                    if(buf[i] == '-')
+                    {
+                        as_mem++;
+                        fprintf(file2, "%d SUB %d\n", as_mem, count_value(buf[i + 1]));
+                    }
+                    if(buf[i] == '*')
+                    {
+                        as_mem++;
+                        fprintf(file2, "%d MUL %d\n", as_mem, count_value(buf[i + 1]));
+                    }
+                    if(buf[i] == '/')
+                    {
+                        as_mem++;
+                        fprintf(file2, "%d DIVIDE %d\n", as_mem, count_value(buf[i + 1]));
+                    }
+                    i++;
+                }while(buf[i] != '\0');
+                as_mem++;
+                fprintf(file2, "%d STORE %d\n", as_mem, count_value(symbol));	
+            }
+            else 
+            {
+                fprintf(file2, "%d = %d\n", count_value(symbol), operand);
+            }
+	}
+        else if(!strcmp(buf, "REM"))
+	{
+            continue;
+        }	
+        else if(!strcmp(buf, "END"))
+        {
+            as_mem++;
+            fprintf(file2, "%d HALT 00", as_mem);
+            end_flag = 0;
+        }
+    }while(end_flag);
+
+    fclose(file1);
+    fclose(file2);
 
     translate("file123.sa");
 
-    return 0;  
+    return 0;
 }
